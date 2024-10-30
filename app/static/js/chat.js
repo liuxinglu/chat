@@ -1,41 +1,39 @@
-// app/static/js/chat.js
-document.addEventListener('DOMContentLoaded', function() {
-    const sendButton = document.getElementById('send');
-    const messageInput = document.getElementById('message');
-    const messagesDiv = document.getElementById('messages');
-    const usernameInput = document.getElementById('username');
+function sendMessage() {
+    const userInput = document.getElementById('userInput').value;
+    if (!userInput) return;
 
-    sendButton.addEventListener('click', function() {
-        const message = messageInput.value.trim();
-        const username = usernameInput.value.trim() || 'Guest';
+    // 在页面显示用户的消息
+    appendMessage('user-message', '用户: '  + userInput);
+    document.getElementById('userInput').value = '';
 
-        if (message === '') return;
-
-        appendMessage('user', message);
-        messageInput.value = '';
-
-        fetch('/send_message', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: message, username: username })
-        })
-        .then(response => response.json())
-        .then(data => {
-            appendMessage('bot', data.response);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            appendMessage('bot', '抱歉，我遇到了一个问题。');
-        });
+    // 发送请求到后端
+    fetch('/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: userInput })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.reply) {
+            appendMessage('bot-message', '碎嘴子: ' + data.reply);
+        } else {
+            appendMessage('bot-message', '碎嘴子: 无法获取回复');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        appendMessage('bot-message', '碎嘴子: 请求失败');
     });
+}
 
-    function appendMessage(sender, message) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add(sender);
-        messageElement.textContent = message;
-        messagesDiv.appendChild(messageElement);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-});
+function appendMessage(className, message) {
+    const chatBox = document.getElementById('chatBox');
+    const messageElement = document.createElement('div');
+    messageElement.className = 'message ' + className;
+    messageElement.textContent = message;
+    messageElement.style.whiteSpace = 'pre-wrap';
+    chatBox.appendChild(messageElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}

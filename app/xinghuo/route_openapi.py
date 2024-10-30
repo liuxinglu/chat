@@ -1,55 +1,49 @@
-import requests
-import json
 import os
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify
+from sparkai.llm.llm import ChatSparkLLM, ChunkPrintHandler
+from sparkai.core.messages import ChatMessage
+from app.tool import SparkApi, base_tool
 
-openapi_bp = Blueprint('wenxin_openapi', __name__)
+xinghuoapi_bp = Blueprint('xinghuo_api', __name__)
 
-
-def get_access_token():
-
-    url = f"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={os.getenv('APP_ID')}&client_secret={os.getenv('APPBUILDER_SECRET_KEY')}"
-
-    payload = json.dumps("")
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-    print(url)
-    response = requests.request("POST", url, headers=headers, data=payload)
-    return response.json().get("access_token")
+spark_api_url = os.getenv('SPARKAI_URL')
+spark_app_id = os.getenv('SPARKAI_APP_ID')
+spark_api_key = os.getenv('SPARKAI_API_KEY')
+spark_api_secret = os.getenv('SPARKAI_API_SECRET')
+spark_llm_domain = os.getenv('SPARKAI_DOMAIN')
+baseTool = base_tool.BaseTool()
 
 
-@openapi_bp.route('/chat', methods=['POST'])
+
+
+
+
+@xinghuoapi_bp.route('/chat', methods=['POST'])
 def chat():
     user_input = request.json.get('message')
     if not user_input:
         return jsonify({'error': 'No message provided'}), 400
 
-    url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ai_apaas_lite?access_token=" + get_access_token()
+    # spark = ChatSparkLLM(
+    #     spark_api_url=spark_api_url,
+    #     spark_app_id=spark_app_id,
+    #     spark_api_key=spark_api_key,
+    #     spark_api_secret=spark_api_secret,
+    #     spark_llm_domain=spark_llm_domain,
+    #     streaming=False,
+    # )
+    # messages = [ChatMessage(role=role, content=user_input)]
+    # handler = ChunkPrintHandler()
+    # response = spark.generate([messages], callbacks=[handler])
+    # print(response.generations[0][0].text, type(response.generations[0][0].text))
+    # print(response.llm_output['token_usage'])
+    # return jsonify({'reply': response.generations[0][0].text})
 
-    payload = json.dumps({
-        "messages": [{
-            "role": "user",
-            "content": user_input
-        }]
-    })
-
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    print(response.headers)
-    print(response.text)
-
-    return jsonify(jsonify({'reply': response.text}))
-
-
-@openapi_bp.route('/')
-def index():
-    return render_template('index.html')
+    SparkApi.answer = ""
+    question = baseTool.checklen(baseTool.getText("user", user_input))
+    SparkApi.main(spark_app_id, spark_api_key, spark_api_secret, spark_api_url, spark_llm_domain, question)
+    baseTool.getText("assistant", SparkApi.answer)
+    return jsonify({'reply':  SparkApi.answer.replace('。', '。\n')})
 
 
 if __name__ == '__main__':

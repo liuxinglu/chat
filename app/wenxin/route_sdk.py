@@ -1,27 +1,20 @@
+import os
+
 from flask import Blueprint, request, jsonify, render_template
 import appbuilder
 
 chat_bp = Blueprint('wenxin', __name__)
 
 # 定义prompt模板
-template_str = "你扮演{role}, 请回答我的问题。\n\n问题：{question}。\n\n回答："
+template_str = "请回答我的问题。\n\n问题：{question}。\n\n回答："
 
 # 初始化 Playground
-playground = appbuilder.Playground(prompt_template=template_str, model="ERNIE Speed-AppBuilder")
+playground = appbuilder.Playground(prompt_template=template_str, model="ERNIE Speed-AppBuilder", secret_key=os.getenv('APPBUILDER_TOKEN'))
 
 
-@chat_bp.route('/ask', methods=['POST'])
-def ask():
-    # 从请求中获取角色和问题
-    data = request.json
-    # role = data.get('role', 'java工程师')
-    # question = data.get('question', '')
-
-    if not data:
-        return jsonify({'error': 'No question provided'}), 400
-
+def ask(user_input):
     # 定义输入
-    input_message = appbuilder.Message({"role": 'java工程师', "question": data})
+    input_message = appbuilder.Message({"role": 'user', "question": user_input})
 
     # 调用大模型并流式展示回答内容
     output = playground(input_message, stream=True, temperature=1e-10)
@@ -47,7 +40,3 @@ def chat():
     print(reply.details)
     return jsonify({'reply': reply.response})
 
-
-@chat_bp.route('/')
-def index():
-    return render_template('index.html')
