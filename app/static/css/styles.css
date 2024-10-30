@@ -24,4 +24,6 @@ body {
 }
 .bot-message {
     color: green;
+    font-family: monospace;
+    white-space: pre; /* 保持空格和换行 */
 }

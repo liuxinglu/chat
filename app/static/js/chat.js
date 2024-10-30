@@ -32,8 +32,21 @@ function appendMessage(className, message) {
     const chatBox = document.getElementById('chatBox');
     const messageElement = document.createElement('div');
     messageElement.className = 'message ' + className;
-    messageElement.textContent = message;
-    messageElement.style.whiteSpace = 'pre-wrap';
-    chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
+    messageElement.id = 'message ' + Date.now()
+    chatBox.appendChild(messageElement);
+    typeText('message '+ Date.now(), message, 100)
+}
+
+function typeText(elementId, text, speed) {
+    const element = document.getElementById(elementId);
+    let index = 0;
+    const type = () => {
+      if (index < text.length) {
+        element.textContent += text.charAt(index);
+        index++;
+        setTimeout(type, speed);
+      }
+    };
+    type();
 }

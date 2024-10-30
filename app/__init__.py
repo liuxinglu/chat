@@ -15,13 +15,13 @@ def create_app():
     # app.register_blueprint(chat_bp)
 
     # 文心一言openapi
-    from .wenxin.route_openapi import openapi_bp
-    app.register_blueprint(openapi_bp)
+    # from .wenxin.route_openapi import openapi_bp
+    # app.register_blueprint(openapi_bp)
 
 
     # 讯飞星火api
-    # from .xinghuo.route_openapi import xinghuoapi_bp
-    # app.register_blueprint(xinghuoapi_bp)
+    from .xinghuo.route_openapi import xinghuoapi_bp
+    app.register_blueprint(xinghuoapi_bp)
 
 
     return app
