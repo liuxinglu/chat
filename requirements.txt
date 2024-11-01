@@ -2,3 +2,5 @@ Flask
 Flask-SQLAlchemy
 requests
 python-dotenv
+PyMuPDF
+appbuilder
