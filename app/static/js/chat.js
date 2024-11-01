@@ -50,3 +50,4 @@ function typeText(elementId, text, speed) {
     };
     type();
 }
+

@@ -13,6 +13,11 @@
         <div class="chat-box" id="chatBox"></div>
         <input type="text" id="userInput" placeholder="输入消息..." style="width: 80%;"/>
         <button onclick="sendMessage()">发送</button>
+        <form method=post enctype=multipart/form-data>
+            <input type=file name=file  id="fileInput" accept=".pdf" style="width: 35%; margin-left: 2%;" />
+            <button onclick="uploadPDF()">上传PDF</button>
+            <input type=submit value=Upload>
+        </form>
     </div>
 </body>
 </html>
