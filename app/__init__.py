@@ -8,7 +8,7 @@ def create_app():
     app = Flask(__name__)
 
     # 配置环境变量
-    appconfig(app)
+    appconfig()
 
     # 注册 Blueprint
     # 文心一言SDK

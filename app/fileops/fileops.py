@@ -1,9 +1,9 @@
 from flask import Blueprint, request, send_from_directory, redirect, url_for, render_template_string, jsonify
 import os
 from PyPDF2 import PdfFileReader
-from docx import Document
+# from docx import Document
 from app.config import upload_folder,download_folder
-import fitz
+from pdfminer.high_level import extract_text
 
 
 fileops_bp = Blueprint('file_ops', __name__)
@@ -21,14 +21,10 @@ def upload_file():
         file.save(filepath)
 
         # 提取PDF中的文本
-        doc = fitz.open(filepath)
-        text = ""
-        for page_num in range(len(doc)):
-            page = doc.load_page(page_num)
-            text += page.get_text()
+        doc = extract_text(filepath)
 
             # 你可以在这里添加将文本保存到数据库或返回给客户端的逻辑
-        return jsonify({'message': 'File uploaded successfully', 'text': text}), 200
+        return jsonify({'message': 'File uploaded successfully', 'text': doc}), 200
     else:
         return jsonify({'error': 'File must be a PDF'}), 400
 
