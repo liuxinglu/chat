@@ -23,7 +23,7 @@
         <button type="button" onclick="uploadFile()">上传并提取文本</button>
     </form>
     <div id="result"></div>
-
+    <div id="keywords"></div>
     <script>
         function uploadFile() {
             var form = document.getElementById('uploadForm');
@@ -45,6 +45,7 @@
                     document.getElementById('result').innerText = '';
                 } else {
                     document.getElementById('result').innerText = data.text;
+                    document.getElementById('keywords').innerText = "关键字："+data.keywords;
                 }
             })
             .catch(error => {

@@ -3,4 +3,4 @@ Flask-SQLAlchemy
 requests
 python-dotenv
 appbuilder
-pypdf2
+pdfminer.six
