@@ -22,5 +22,8 @@ class BaseTool():
 
     def checklen(self, text):
         while (self.getlength(text) > 8000):
-            del text[0]
+            if len(text) == 1:
+                text[0]['content'] = text[0]['content'][1:8000]
+            else:
+                del text[0]
         return text

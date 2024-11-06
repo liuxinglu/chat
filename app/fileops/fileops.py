@@ -1,4 +1,4 @@
-from flask import Blueprint, request, send_from_directory, redirect, url_for, render_template_string, jsonify
+from flask import Blueprint, request, send_from_directory, g, jsonify,session
 import os
 from app.config import upload_folder,download_folder
 from pdfminer.high_level import extract_text
@@ -6,10 +6,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import jieba
 from rake_nltk import Rake
 import nltk
+
+fileops_bp = Blueprint('file_ops', __name__)
+
 nltk.download('stopwords')
 nltk.download('punkt_tab')
 
-fileops_bp = Blueprint('file_ops', __name__)
+
+
 rake_nltk_extractor = Rake()
 
 @fileops_bp.route('/upload', methods=['POST'])
@@ -27,6 +31,7 @@ def upload_file():
         doc = extract_text(filepath)
         word_list = preprocess_and_tokenize_text(doc)
         keywords = extract_keywords(word_list)
+        # session['doc'] = doc
         return jsonify({
             'message': 'File uploaded successfully',
             'text': doc,

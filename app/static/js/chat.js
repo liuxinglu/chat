@@ -82,3 +82,30 @@ function typeText(elementId, text, speed) {
     });
 }
 
+function getKeywords() {
+    const userInput = document.getElementById('result').textContent;
+    // 在页面显示用户的消息
+    appendMessage('user-message', '用户: '  + "提取关键字");
+    document.getElementById('userInput').value = '';
+
+    // 发送请求到后端
+    fetch('/openapi/getKeyword', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: userInput+ "提取关键字" })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.reply) {
+            appendMessage('bot-message', '碎嘴子: ' + data.reply);
+        } else {
+            appendMessage('bot-message', '碎嘴子: 无法获取回复');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        appendMessage('bot-message', '碎嘴子: 请求失败');
+    });
+}
