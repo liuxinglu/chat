@@ -6,7 +6,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import jieba
 from rake_nltk import Rake
 import nltk
-from collections import Counter, defaultdict
 nltk.download('stopwords')
 nltk.download('punkt_tab')
 

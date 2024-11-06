@@ -9,41 +9,40 @@ text = []
 baseTool = base_tool.BaseTool()
 conversation_id = ""
 app_id = os.getenv('APP_ID')
-headers = {
+
+
+def get_access_token():
+    url = f"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={os.getenv('API_KEY')}&client_secret={os.getenv('SECRET_KEY')}"
+
+    payload = json.dumps("")
+    headers = {
         'Content-Type': 'application/json',
-        'X-Appbuilder-Authorization': 'Bearer ' + os.getenv('APPBUILDER_TOKEN')
-}
+        'Accept': 'application/json'
+    }
 
-def get_converstation_id():
-    url = "https://qianfan.baidubce.com/v2/app/conversation"
-    payload = {"app_id": app_id}
-    response = requests.request("POST", url, headers=headers, json=payload, verify=False)
-
-    return json.loads(response.text)['conversation_id']
-
+    response = requests.request("POST", url, headers=headers, data=payload, verify=False)
+    return response.json().get("access_token")
 
 @openapi_bp.route('/chat', methods=['POST'])
 def chat():
-    global conversation_id, text
+    global text
     user_input = request.json.get('message')
     if not user_input:
         return jsonify({'error': 'No message provided'}), 400
 
-    text = baseTool.checklen(baseTool.getText("user", user_input))
-    conversation_id = conversation_id if conversation_id != "" else get_converstation_id()
+    url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-128k?access_token=" + get_access_token()
 
-    url = "https://qianfan.baidubce.com/v2/app/conversation/runs"
+    text = baseTool.checklen(baseTool.getText("user", user_input))
     payload = {
-        "app_id": app_id,
-        "stream": False,
-        "conversation_id": conversation_id,
-        "query": user_input,
         "messages": text
+    }
+
+    headers = {
+        'Content-Type': 'application/json',
     }
     response = requests.request("POST", url, headers=headers, json=payload, verify=False)
     rep = json.loads(response.text)
     print(response.text)
 
-    conversation_id = rep.get('conversation_id')
-    text = baseTool.checklen(baseTool.getText("assistant", rep.get('answer')))
-    return jsonify({'reply': rep.get('answer')})
+    text = baseTool.checklen(baseTool.getText("assistant", rep.get('result')))
+    return jsonify({'reply': rep.get('result')})

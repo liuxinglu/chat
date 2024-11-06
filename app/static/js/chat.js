@@ -7,7 +7,7 @@ function sendMessage() {
     document.getElementById('userInput').value = '';
 
     // 发送请求到后端
-    fetch('/chat', {
+    fetch('/openapi/chat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -32,10 +32,11 @@ function appendMessage(className, message) {
     const chatBox = document.getElementById('chatBox');
     const messageElement = document.createElement('div');
     messageElement.className = 'message ' + className;
-    chatBox.scrollTop = chatBox.scrollHeight;
+    messageElement.style.whiteSpace = 'pre-wrap';
     messageElement.id = 'message ' + Date.now()
+    chatBox.scrollTop = chatBox.scrollHeight;
     chatBox.appendChild(messageElement);
-    typeText('message '+ Date.now(), message, 100)
+     typeText('message '+ Date.now(), message, 10)
 }
 
 function typeText(elementId, text, speed) {
@@ -49,5 +50,35 @@ function typeText(elementId, text, speed) {
       }
     };
     type();
+}
+
+ function uploadFile() {
+    var form = document.getElementById('uploadForm');
+    var formData = new FormData(form);
+
+    fetch('/fileops/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            document.getElementById('result').innerText = '';
+        } else {
+            document.getElementById('result').innerText = data.text;
+            document.getElementById('keywords').innerText = "关键字："+data.keywords;
+        }
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+        alert('An error occurred while uploading the file.');
+        document.getElementById('result').innerText = '';
+    });
 }
 
