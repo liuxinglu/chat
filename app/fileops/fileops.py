@@ -29,8 +29,8 @@ def upload_file():
 
         # 提取PDF中的文本
         doc = extract_text(filepath)
-        word_list = preprocess_and_tokenize_text(doc)
-        keywords = extract_keywords(word_list)
+        # word_list = preprocess_and_tokenize_text(doc)
+        keywords =  "" #extract_keywords(word_list)
         # session['doc'] = doc
         return jsonify({
             'message': 'File uploaded successfully',
