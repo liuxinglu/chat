@@ -1,3 +1,4 @@
+//发送消息
 function sendMessage() {
     const userInput = document.getElementById('userInput').value;
     if (!userInput) return;
@@ -39,6 +40,7 @@ function appendMessage(className, message) {
      typeText('message '+ Date.now(), message, 10)
 }
 
+//打印机效果
 function typeText(elementId, text, speed) {
     const element = document.getElementById(elementId);
     let index = 0;
@@ -52,6 +54,7 @@ function typeText(elementId, text, speed) {
     type();
 }
 
+//上传文件
  function uploadFile() {
     var form = document.getElementById('uploadForm');
     var formData = new FormData(form);
@@ -82,6 +85,7 @@ function typeText(elementId, text, speed) {
     });
 }
 
+//提取关键字
 function getKeywords() {
     const userInput = document.getElementById('result').textContent;
     // 在页面显示用户的消息

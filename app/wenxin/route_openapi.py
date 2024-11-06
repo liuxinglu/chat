@@ -58,7 +58,8 @@ def getKeyword():
 
     text = baseTool.getText("user", user_input)
     payload = {
-        "messages": text
+        "messages": text,
+        "system": "" #这里传入prompt
     }
 
     headers = {
