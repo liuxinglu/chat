@@ -4,7 +4,7 @@ from PyPDF2 import PdfFileReader
 # from docx import Document
 from app.config import upload_folder,download_folder
 from pdfminer.high_level import extract_text
-
+# import pdfplumber
 
 fileops_bp = Blueprint('file_ops', __name__)
 
