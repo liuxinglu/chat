@@ -75,7 +75,7 @@ function typeText(elementId, text, speed) {
             document.getElementById('result').innerText = '';
         } else {
             document.getElementById('result').innerText = data.text;
-            document.getElementById('keywords').innerText = "关键字："+data.keywords;
+            document.getElementById('keywords').innerText = ""+data.keywords;
         }
     })
     .catch(error => {
