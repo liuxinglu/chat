@@ -54,6 +54,8 @@ function typeText(elementId, text, speed) {
     type();
 }
 
+let uploadHistory = []; // 存储上传历史的数组
+
 //上传文件
  function uploadFile() {
     var form = document.getElementById('uploadForm');
@@ -77,6 +79,13 @@ function typeText(elementId, text, speed) {
             document.getElementById('result').innerText = data.text;
             document.getElementById('keywords').innerText = "关键字："+data.keywords;
         }
+
+        const uploadTime = new Date().toLocaleString();
+        // 将文件名和时间添加到上传历史数组
+        u = document.getElementById('fileInput')
+        uploadHistory.push({ fileName: u.files[0].name, time: uploadTime, content: data.text });
+        // 更新页面上的上传历史显示
+        displayUploadHistory();
     })
     .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
@@ -112,4 +121,33 @@ function getKeywords() {
         console.error('Error:', error);
         appendMessage('bot-message', '碎嘴子: 请求失败');
     });
+}
+
+
+// 显示上传历史列表
+function displayUploadHistory() {
+    const historyList = document.getElementById("uploadHistory");
+    historyList.innerHTML = ""; // 清空之前的历史记录
+
+    // 遍历上传历史数组，生成列表项
+    uploadHistory.forEach((record, index) => {
+        const listItem = document.createElement("li");
+        listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+
+        listItem.innerHTML = `
+            <span>${record.fileName}</span>
+            <div>
+                <span class="text-muted me-3" style="font-size: 0.9rem;">${record.time}</span>
+                <button class="btn btn-outline-primary btn-sm" onclick="viewFile(${index})">查看文件</button>
+            </div>
+        `;
+        historyList.appendChild(listItem);
+    });
+}
+
+// 查看文件内容并显示在result区域
+function viewFile(index) {
+    const resultDiv = document.getElementById("result");
+    const fileContent = uploadHistory[index].content;
+    resultDiv.innerHTML = `<strong>文件内容:</strong><br>${fileContent}`;
 }
