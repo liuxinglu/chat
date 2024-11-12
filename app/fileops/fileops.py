@@ -19,12 +19,9 @@ def upload_file():
 
         # 提取PDF中的文本
         doc = extract_text(filepath)
-        keywords =  ""
-        # session['doc'] = doc
         return jsonify({
             'message': 'File uploaded successfully',
-            'text': doc,
-            'keywords': keywords}), 200
+            'text': doc}), 200
     else:
         return jsonify({'error': 'File must be a PDF'}), 400
 
@@ -37,4 +34,14 @@ def uploaded_file(filename):
 @fileops_bp.route('/downloads/<filename>')
 def download(filename):
     return send_from_directory(download_folder, filename, as_attachment=True)
+
+@fileops_bp.route('/getFile', methods=['GET'])
+def getFile():
+    filename = request.args.get('filename')
+    print(filename)
+    filepath = os.path.join(upload_folder, filename)
+    doc = extract_text(filepath)
+    return jsonify({
+        'message': 'File uploaded successfully',
+        'text': doc}), 200
 

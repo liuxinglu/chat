@@ -146,7 +146,15 @@ function displayUploadHistory() {
 
 // 查看文件内容并显示在result区域
 function viewFile(index) {
-    const resultDiv = document.getElementById("result");
-    const fileContent = uploadHistoryList[index].content;
-    resultDiv.innerHTML = `${fileContent}`;
+    const fileName = uploadHistoryList[index].fileName;
+    fetch(`/fileops/getFile?filename=${encodeURIComponent(fileName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    // 将返回结果展示在页面上
+                    document.getElementById('result').innerText = data.text;
+                })
+                .catch(error => console.error('Error:', error));
+//    const resultDiv = document.getElementById("result");
+//    const fileContent = uploadHistoryList[index].content;
+//    resultDiv.innerHTML = `${fileContent}`;
 }
