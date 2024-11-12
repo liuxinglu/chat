@@ -54,7 +54,7 @@ function typeText(elementId, text, speed) {
     type();
 }
 
-let uploadHistory = []; // 存储上传历史的数组
+uploadHistoryList = []; // 存储上传历史的数组
 
 //上传文件
  function uploadFile() {
@@ -77,13 +77,12 @@ let uploadHistory = []; // 存储上传历史的数组
             document.getElementById('result').innerText = '';
         } else {
             document.getElementById('result').innerText = data.text;
-            document.getElementById('keywords').innerText = ""+data.keywords;
         }
 
         const uploadTime = new Date().toLocaleString();
         // 将文件名和时间添加到上传历史数组
         u = document.getElementById('fileInput')
-        uploadHistory.push({ fileName: u.files[0].name, time: uploadTime, content: data.text });
+        uploadHistoryList.push({ fileName: u.files[0].name, time: uploadTime, content: data.text });
         // 更新页面上的上传历史显示
         displayUploadHistory();
     })
@@ -130,7 +129,7 @@ function displayUploadHistory() {
     historyList.innerHTML = ""; // 清空之前的历史记录
 
     // 遍历上传历史数组，生成列表项
-    uploadHistory.forEach((record, index) => {
+    uploadHistoryList.forEach((record, index) => {
         const listItem = document.createElement("li");
         listItem.className = "list-group-item d-flex justify-content-between align-items-center";
 
@@ -148,6 +147,6 @@ function displayUploadHistory() {
 // 查看文件内容并显示在result区域
 function viewFile(index) {
     const resultDiv = document.getElementById("result");
-    const fileContent = uploadHistory[index].content;
-    resultDiv.innerHTML = `<strong>文件内容:</strong><br>${fileContent}`;
+    const fileContent = uploadHistoryList[index].content;
+    resultDiv.innerHTML = `${fileContent}`;
 }
