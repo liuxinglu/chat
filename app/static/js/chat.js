@@ -1,3 +1,4 @@
+let messageIndex = 0
 //发送消息
 function sendMessage() {
     const userInput = document.getElementById('userInput').value;
@@ -34,10 +35,11 @@ function appendMessage(className, message) {
     const messageElement = document.createElement('div');
     messageElement.className = 'message ' + className;
     messageElement.style.whiteSpace = 'pre-wrap';
-    messageElement.id = 'message ' + Date.now()
-    chatBox.scrollTop = chatBox.scrollHeight;
+    messageElement.id = 'message' + messageIndex;
     chatBox.appendChild(messageElement);
-     typeText('message '+ Date.now(), message, 10)
+     typeText('message'+ messageIndex, message, 10)
+     messageIndex++;
+
 }
 
 //打印机效果
@@ -49,6 +51,8 @@ function typeText(elementId, text, speed) {
         element.textContent += text.charAt(index);
         index++;
         setTimeout(type, speed);
+        const chatBox = document.getElementById('chatBox');
+        chatBox.scrollTop = chatBox.scrollHeight;
       }
     };
     type();
@@ -85,6 +89,10 @@ uploadHistoryList = []; // 存储上传历史的数组
         uploadHistoryList.push({ fileName: u.files[0].name, time: uploadTime, content: data.text });
         // 更新页面上的上传历史显示
         displayUploadHistory();
+        // 高亮显示刚上传的文件
+        highlightNewUpload(uploadHistoryList.length - 1);
+        // 滚动到最新上传的文件
+        scrollToLatestUpload();
     })
     .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
@@ -132,12 +140,13 @@ function displayUploadHistory() {
     uploadHistoryList.forEach((record, index) => {
         const listItem = document.createElement("li");
         listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+        listItem.id = `uploadItem-${index}`; // 为每个列表项设置唯一 ID
 
         listItem.innerHTML = `
-            <span>${record.fileName}</span>
+            <span id="fileName-${index}">${record.fileName}</span>
             <div>
-                <span class="text-muted me-3" style="font-size: 0.9rem;">${record.time}</span>
-                <button class="btn btn-outline-primary btn-sm" onclick="viewFile(${index})">查看文件</button>
+                <span class="text-muted me-3" style="font-size: 0.6rem;">${record.time}</span>
+                <button class="btn btn-outline-primary btn-sm" onclick="viewFile(${index})">查看</button>
             </div>
         `;
         historyList.appendChild(listItem);
@@ -157,4 +166,20 @@ function viewFile(index) {
     const resultDiv = document.getElementById("result");
     const fileContent = uploadHistoryList[index].content;
     resultDiv.innerHTML = `${fileContent}`;
+}
+
+
+// 高亮显示刚上传的文件
+function highlightNewUpload(index) {
+    const listItem = document.getElementById(`uploadItem-${index}`);
+//    const listItem = document.getElementById(`fileName-${index}`);
+    if (listItem) {
+        listItem.classList.add("highlight-animation"); // 添加高亮动画类
+    }
+}
+
+// 滚动到列表底部
+function scrollToLatestUpload() {
+    const historyList = document.getElementById("uploadHistory");
+    historyList.scrollTop = historyList.scrollHeight; // 将滚动位置设置为列表的最大高度
 }

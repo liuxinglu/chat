@@ -10,7 +10,7 @@ body {
     border-radius: 5px;
 }
 .chat-box {
-    height: 300px;
+    height: 500px;
     overflow-y: scroll;
     border: 1px solid #ddd;
     padding: 10px;
@@ -34,6 +34,32 @@ body {
     border: 1px solid #ccc;
     padding: 10px;
     margin-top: 20px;
-    height: 300px; /* 可根据需要调整高度 */
+    height: 200px; /* 可根据需要调整高度 */
     overflow-y: auto; /* 启用垂直滚动条 */
+}
+
+
+@keyframes highlight {
+    0% {
+        background-color: #3bff50;
+    }
+    50% {
+        background-color: #c2f3b8;
+    }
+    100% {
+        background-color: #ffffff;
+    }
+}
+
+.highlight-animation {
+    animation: highlight 1s ease-out;
+}
+
+/* 为上传历史列表添加滚动条 */
+#uploadHistory {
+    max-height: 200px; /* 设置一个固定的高度 */
+    overflow-y: auto;  /* 如果内容超出容器，显示纵向滚动条 */
+    border: 1px solid #ddd; /* 添加边框让滚动区域更加明显 */
+    padding: 10px;
+    margin-top: 10px;
 }
