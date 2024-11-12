@@ -77,7 +77,7 @@ let uploadHistory = []; // 存储上传历史的数组
             document.getElementById('result').innerText = '';
         } else {
             document.getElementById('result').innerText = data.text;
-            document.getElementById('keywords').innerText = "关键字："+data.keywords;
+            document.getElementById('keywords').innerText = ""+data.keywords;
         }
 
         const uploadTime = new Date().toLocaleString();
