@@ -18,7 +18,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('注册成功！请登录。')
+        flash('注册成功！请登录。', category='success')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
@@ -28,10 +28,10 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('用户名或密码无效')
+            flash('用户名或密码无效', category='error')
             return redirect(url_for('auth.login'))
         login_user(user)
-        flash('登录成功！')
+        flash('登录成功！', category='success')
         return redirect(url_for('index'))
     return render_template('auth/login.html', form=form)
 
@@ -40,4 +40,5 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash('登出成功！', category='success')
     return redirect(url_for('auth.login'))
