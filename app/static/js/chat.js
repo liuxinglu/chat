@@ -137,29 +137,48 @@ function getKeywords() {
 
 
 // 显示上传历史列表
-function displayUploadHistory() {
+function displayUploadHistory(files="none") {
     const historyList = document.getElementById("uploadHistory");
     historyList.innerHTML = ""; // 清空之前的历史记录
+    if(files === "none") {
+        // 遍历上传历史数组，生成列表项
+        uploadHistoryList.forEach((record, index) => {
+            const listItem = document.createElement("li");
+            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+            listItem.id = `uploadItem-${index}`; // 为每个列表项设置唯一 ID
 
-    // 遍历上传历史数组，生成列表项
-    uploadHistoryList.forEach((record, index) => {
-        const listItem = document.createElement("li");
-        listItem.className = "list-group-item d-flex justify-content-between align-items-center";
-        listItem.id = `uploadItem-${index}`; // 为每个列表项设置唯一 ID
+            listItem.innerHTML = `
+                <span id="fileName-${index}">${record.fileName}</span>
+                <div>
+                    <span class="text-muted me-3" style="font-size: 0.6rem;">${record.time}</span>
+                    <button class="btn btn-outline-primary btn-sm" onclick="viewFile(${index})">查看</button>
+                </div>
+            `;
+            historyList.appendChild(listItem);
+        });
+    }
+    else {
+        uploadHistoryList = [];
+        files.forEach((file, index) => {
+            const listItem = document.createElement("li");
+            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+            listItem.id = `uploadItem-${index}`; // 为每个列表项设置唯一 ID
+            listItem.innerHTML = `
+                <span id="fileName-${index}">${file.filename} </span>
+                <div>
+                    <span class="text-muted me-3" style="font-size: 0.6rem;">${new Date(file.upload_date).toLocaleString()}</span>
+                    <button class="btn btn-outline-primary btn-sm" onclick="viewFileContent(${index})">查看</button>
+                </div>
+            `;
 
-        listItem.innerHTML = `
-            <span id="fileName-${index}">${record.fileName}</span>
-            <div>
-                <span class="text-muted me-3" style="font-size: 0.6rem;">${record.time}</span>
-                <button class="btn btn-outline-primary btn-sm" onclick="viewFile(${index})">查看</button>
-            </div>
-        `;
-        historyList.appendChild(listItem);
-    });
+            historyList.appendChild(listItem);
+            uploadHistoryList.push({ fileName: file.filename, time: new Date(file.upload_date).toLocaleString(), content: file.content });
+        });
+    }
 }
 
 // 查看文件内容并显示在result区域
-function viewFile(index) {
+function viewFileContent(index) {
 //    const fileName = uploadHistoryList[index].fileName;
 //    fetch(`/fileops/getFile?filename=${encodeURIComponent(fileName)}`)
 //                .then(response => response.json())

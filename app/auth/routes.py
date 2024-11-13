@@ -31,6 +31,7 @@ def login():
             flash('用户名或密码无效', category='error')
             return redirect(url_for('auth.login'))
         login_user(user)
+        session['user_id'] = user.id
         flash('登录成功！', category='success')
         return redirect(url_for('index'))
     return render_template('auth/login.html', form=form)

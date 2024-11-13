@@ -76,23 +76,36 @@
             }
         });
         $(document).ready(function() {
-    // 检查是否有flash消息
-    if ($('#flash-messages li').length > 0) {
-        // 等待动画完成后再设置定时器隐藏flash消息
-        setTimeout(function() {
-            $('#flash-messages li').each(function(index) {
-                // 为每个flash消息元素添加淡出动画
-                $(this).fadeOut(500, function() {
-                    // 淡出完成后添加hidden类以隐藏元素（可选，因为fadeOut已经隐藏了元素）
-                    $(this).addClass('hidden');
-                });
-                // 如果你想要它们逐个消失，可以使用延迟
-                // setTimeout(function() { $(this).fadeOut(500); }.bind(this), index * 500);
-            });
-            // 如果你想要整个列表在动画完成后从DOM中移除（可选）
-            // $('#flash-messages').remove();
-        }, 1000 + 500); // 1000ms等待动画完成，再加上500ms的fadeOut时间
-    }
-});
+            // 检查是否有flash消息
+            if ($('#flash-messages li').length > 0) {
+                // 等待动画完成后再设置定时器隐藏flash消息
+                setTimeout(function() {
+                    $('#flash-messages li').each(function(index) {
+                        // 为每个flash消息元素添加淡出动画
+                        $(this).fadeOut(500, function() {
+                            // 淡出完成后添加hidden类以隐藏元素（可选，因为fadeOut已经隐藏了元素）
+                            $(this).addClass('hidden');
+                        });
+                        // 如果你想要它们逐个消失，可以使用延迟
+                        // setTimeout(function() { $(this).fadeOut(500); }.bind(this), index * 500);
+                    });
+                    // 如果你想要整个列表在动画完成后从DOM中移除（可选）
+                    // $('#flash-messages').remove();
+                }, 1000 + 500); // 1000ms等待动画完成，再加上500ms的fadeOut时间
+            }
+        });
+        // 获取并显示用户上传历史
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch('/fileops/history')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error(data.error);
+                    } else {
+                        displayUploadHistory(data);
+                    }
+                })
+                .catch(error => console.error('Error fetching history:', error));
+        });
     </script>
 </html>

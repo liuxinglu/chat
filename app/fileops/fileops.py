@@ -3,14 +3,22 @@ import os
 from app.config import upload_folder,download_folder
 from pdfminer.high_level import extract_text
 from werkzeug.utils import secure_filename
+from app.model.models import UploadedFile, db
+from flask_login import login_required
 
 fileops_bp = Blueprint('file_ops', __name__)
 
 
 @fileops_bp.route('/upload', methods=['POST'])
+@login_required
 def upload_file():
+    if 'user_id' not in session:
+        return jsonify({'error': 'User not authenticated'}), 401
+
+    user_id = session['user_id']
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
+
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
@@ -20,6 +28,10 @@ def upload_file():
 
         # 提取PDF中的文本
         doc = extract_text(filepath)
+        # 将文件信息保存到数据库
+        uploaded_file = UploadedFile(filename=file.filename, content=doc, user_id=user_id)
+        db.session.add(uploaded_file)
+        db.session.commit()
         return jsonify({
             'message': 'File uploaded successfully',
             'text': doc}), 200
@@ -37,6 +49,7 @@ def download(filename):
     return send_from_directory(download_folder, filename, as_attachment=True)
 
 @fileops_bp.route('/getFile', methods=['GET'])
+@login_required
 def getFile():
     filename = request.args.get('filename')
     print(filename)
@@ -46,3 +59,15 @@ def getFile():
         'message': 'File uploaded successfully',
         'text': doc}), 200
 
+
+@fileops_bp.route('/history', methods=['GET'])
+@login_required
+def get_upload_history():
+    if 'user_id' not in session:
+        print('User not authenticated')
+        return jsonify({'error': 'User not authenticated'}), 401
+
+    user_id = session['user_id']
+    files = UploadedFile.query.filter_by(user_id=user_id).all()
+    file_data = [{'filename': f.filename, 'upload_date': f.upload_date, 'content': f.content} for f in files]
+    return jsonify(file_data), 200
