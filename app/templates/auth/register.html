@@ -55,6 +55,22 @@
 .hidden {
     display: none;
 }
+
+/* 保持原有的.input-fixed-width类不变 */
+.input-fixed-width {
+    width: calc(100% - 150px); /* 根据布局需求调整宽度 */
+    box-sizing: border-box; /* 确保padding和border不会增加总宽度 */
+}
+
+/* 增加.form-group类的底部外边距以增大行间距 */
+.form-group {
+    margin-bottom: 20px; /* 根据需要调整间距大小 */
+}
+
+/* 可选：为最后一个.form-group（通常是提交按钮）添加特殊样式以去除底部外边距 */
+.form-group.last {
+    margin-bottom: 0;
+}
     </style>
 </head>
 <body>
@@ -72,35 +88,43 @@
         <h2 class="text-center mb-4">注册</h2>
         <form method="post" action="{{ url_for('auth.register') }}">
             {{ form.hidden_tag() }}
-            <div class="mb-3">
-                {{ form.username.label(class="form-label") }}
-                {{ form.username(class="form-control") }}
-                <div class="text-danger">
-                    {% for error in form.username.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
+            <div class="form-group row">
+                <label for="{{ form.username.id }}" class="col-sm-2 col-form-label">{{ form.username.label }}</label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.username(class="form-control input-fixed-width") }} <!-- 移除了flex-grow-0，因为宽度已固定 -->
+                    <div class="ml-2 text-danger small form-error">
+                        {% for error in form.username.errors %}
+                            {{ error }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-            <div class="mb-3">
-                {{ form.password.label(class="form-label") }}
-                {{ form.password(class="form-control") }}
-                <div class="text-danger">
-                    {% for error in form.password.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
+            <div class="form-group row">
+                <label for="{{ form.password.id }}" class="col-sm-2 col-form-label">{{ form.password.label }}</label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.password(class="form-control input-fixed-width") }} <!-- 同样移除了flex-grow-0 -->
+                    <div class="ml-2 text-danger small form-error">
+                        {% for error in form.password.errors %}
+                            {{ error }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-            <div class="mb-3">
-                {{ form.password2.label(class="form-label") }}
-                {{ form.password2(class="form-control") }}
-                <div class="text-danger">
-                    {% for error in form.password2.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
+            <div class="form-group row">
+                <label for="{{ form.password2.id }}" class="col-sm-2 col-form-label">{{ form.password2.label }}</label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.password2(class="form-control input-fixed-width") }}
+                    <div class="ml-2 text-danger small form-error">
+                        {% for error in form.password2.errors %}
+                            {{ error }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-            <div class="mb-3">
-                {{ form.submit(class="btn btn-primary w-100") }}
+            <div class="form-group row last">
+                <div class="col-sm-10 offset-sm-2">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
             </div>
         </form>
 

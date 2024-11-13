@@ -1,6 +1,7 @@
 import os
 from flask import Blueprint, request, jsonify
 from app.tool import SparkApi, base_tool
+from flask_login import login_required
 
 xinghuoapi_bp = Blueprint('xinghuo_api', __name__)
 
@@ -13,6 +14,7 @@ baseTool = base_tool.BaseTool()
 
 
 @xinghuoapi_bp.route('/chat', methods=['POST'])
+@login_required
 def chat():
     user_input = request.json.get('message')
     if not user_input:
