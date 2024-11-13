@@ -1,16 +1,42 @@
 # app/__init__.py
 from flask import Flask
+from flask_login import LoginManager
 from app.config import appconfig
+import logging
+import os
+from app.model.models import users, User
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+db = SQLAlchemy()
+migrate = Migrate()
 
 
-
+login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
 
     # 配置环境变量
     appconfig()
+    app.config.from_object('app.config.Config')
+
+    # 初始化数据库和迁移
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    app.secret_key = os.urandom(24).hex()
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
+
+    # 设置日志记录
+    if not app.debug:
+        file_handler = logging.FileHandler('error.log')
+        file_handler.setLevel(logging.WARNING)
+        app.logger.addHandler(file_handler)
 
     # 注册 Blueprint
+    from .auth.routes import auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
     # 文心一言SDK
     # from .wenxin.route_sdk import chat_bp
     # app.register_blueprint(chat_bp)
@@ -30,4 +56,11 @@ def create_app():
 
 
     return app
+
+@login_manager.user_loader
+def load_user(user_id):
+    for user in users.values():
+        if user.id == int(user_id):
+            return user
+    return None
 

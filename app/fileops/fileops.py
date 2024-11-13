@@ -2,6 +2,7 @@ from flask import Blueprint, request, send_from_directory, g, jsonify,session
 import os
 from app.config import upload_folder,download_folder
 from pdfminer.high_level import extract_text
+from werkzeug.utils import secure_filename
 
 fileops_bp = Blueprint('file_ops', __name__)
 
@@ -14,7 +15,7 @@ def upload_file():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
     if file and file.filename.endswith('.pdf'):
-        filepath = os.path.join(upload_folder, file.filename)
+        filepath = os.path.join(upload_folder, secure_filename(file.filename))
         file.save(filepath)
 
         # 提取PDF中的文本

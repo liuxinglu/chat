@@ -1,7 +1,5 @@
 import os
 from flask import Blueprint, request, jsonify
-from sparkai.llm.llm import ChatSparkLLM, ChunkPrintHandler
-from sparkai.core.messages import ChatMessage
 from app.tool import SparkApi, base_tool
 
 xinghuoapi_bp = Blueprint('xinghuo_api', __name__)

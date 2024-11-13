@@ -8,6 +8,7 @@ body {
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 5px;
+    width: 90%;
 }
 .chat-box {
     height: 500px;
@@ -62,4 +63,17 @@ body {
     border: 1px solid #ddd; /* 添加边框让滚动区域更加明显 */
     padding: 10px;
     margin-top: 10px;
+}
+
+#uploadHistory::-webkit-scrollbar, .chat-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+#uploadHistory::-webkit-scrollbar-thumb, .chat-box::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+#uploadHistory::-webkit-scrollbar-track, .chat-box::-webkit-scrollbar-track {
+    background: #f9f9f9;
 }

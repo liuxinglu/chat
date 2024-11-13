@@ -16,7 +16,12 @@ function sendMessage() {
         },
         body: JSON.stringify({ message: userInput })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
     .then(data => {
         if (data.reply) {
             appendMessage('bot-message', '碎嘴子: ' + data.reply);
@@ -26,7 +31,7 @@ function sendMessage() {
     })
     .catch(error => {
         console.error('Error:', error);
-        appendMessage('bot-message', '碎嘴子: 请求失败');
+        appendMessage('bot-message', `碎嘴子: 请求失败 (${error.message})`);
     });
 }
 
