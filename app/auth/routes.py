@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import check_password_hash
-from app import db
+from app.database import db
 from app.model.models import User
 from .forms import RegistrationForm
 from .forms import LoginForm

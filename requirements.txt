@@ -1,6 +1,10 @@
 Flask
 Flask-SQLAlchemy
+Flask-migrate
+Flask-login
+Flask-wtf
 requests
 python-dotenv
 appbuilder
 pdfminer.six
+websocket
