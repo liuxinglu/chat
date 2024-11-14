@@ -4,14 +4,15 @@ from flask_login import LoginManager
 from app.config import appconfig
 import logging
 import os
-from app.database import db
 from app.model.models import User
-from flask_sqlalchemy import SQLAlchemy
+from app.database import db
 from flask_migrate import Migrate
 
-migrate = Migrate()
-login_manager = LoginManager()
 
+migrate = Migrate()
+
+
+login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
 
@@ -59,4 +60,5 @@ def create_app():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 

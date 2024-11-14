@@ -1,6 +1,10 @@
-Flask
-Flask-SQLAlchemy
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-migrate==4.0.7
+Flask-login==0.6.3
+Flask-wtf==1.2.2
 requests
-python-dotenv
+python-dotenv==1.0.1
 appbuilder
-pdfminer.six
+pdfminer.six==20240706
+websocket-client==1.8.0
