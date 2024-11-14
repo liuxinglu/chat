@@ -24,14 +24,14 @@ function sendMessage() {
       })
     .then(data => {
         if (data.reply) {
-            appendMessage('bot-message', '碎嘴子: ' + data.reply);
+            appendMessage('bot-message', '回复: ' + data.reply);
         } else {
-            appendMessage('bot-message', '碎嘴子: 无法获取回复');
+            appendMessage('bot-message', '回复: 无法获取回复');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        appendMessage('bot-message', `碎嘴子: 请求失败 (${error.message})`);
+        appendMessage('bot-message', `回复: 请求失败 (${error.message})`);
     });
 }
 
@@ -124,14 +124,14 @@ function getKeywords() {
     .then(response => response.json())
     .then(data => {
         if (data.reply) {
-            appendMessage('bot-message', '碎嘴子: ' + data.reply);
+            appendMessage('bot-message', '回复: ' + data.reply);
         } else {
-            appendMessage('bot-message', '碎嘴子: 无法获取回复');
+            appendMessage('bot-message', '回复: 无法获取回复');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        appendMessage('bot-message', '碎嘴子: 请求失败');
+        appendMessage('bot-message', '回复: 请求失败');
     });
 }
 
