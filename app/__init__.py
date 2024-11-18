@@ -54,6 +54,10 @@ def create_app():
     from .fileops.fileops import fileops_bp
     app.register_blueprint(fileops_bp, url_prefix='/fileops')
 
+    # 页面操作
+    from .control.routes import pageops_bp
+    app.register_blueprint(pageops_bp, url_prefix='/pageops')
+
 
     return app
 

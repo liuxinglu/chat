@@ -9,7 +9,7 @@ with app.app_context():
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html')
+    return render_template('index1.html')
 
 
 if __name__ == '__main__':
