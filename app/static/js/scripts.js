@@ -4,10 +4,12 @@ $(document).ready(function () {
         $("#wrapper").toggleClass("toggled");
         // 切换按钮文本
         var $this = $(this);
-        if ($this.text() === '<<') {
-            $this.text('>>');
+        if ($this.find('.icon').text() === '◀') {
+            $this.attr('aria-expanded', 'true');
+            $this.find('.icon').text('▶');
         } else {
-            $this.text('<<');
+            $this.attr('aria-expanded', 'false');
+            $this.find('.icon').text('◀');
         }
     });
 
@@ -25,6 +27,24 @@ $(document).ready(function () {
 
             // 为当前点击的列表项添加.active类
             this.classList.add('active');
+        });
+    });
+
+    $('#modelSelector').change(function() {
+        var selectedModel = $(this).val();
+
+        // 使用jQuery的$.ajax方法发送POST请求到后端
+        $.ajax({
+            url: '/pageops/selectModel',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ model: selectedModel }),
+            success: function(data) {
+                console.log('Success:', data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
         });
     });
 

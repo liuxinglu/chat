@@ -38,7 +38,18 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                <button class="btn btn-primary" id="menu-toggle"><<</button>
+                <button class="toggle-button"  id="menu-toggle" aria-expanded="false">
+                    <span class="icon" id="toggle-icon">▶</span> <!-- 初始状态为向右箭头 -->
+                </button>
+
+                <div class="navbar-nav ms-auto">
+                    <select id="modelSelector" class="form-select" aria-label="Select large model">
+                        <option selected>请选择大模型</option>
+                        <option value="wenxin">文心一言3.5</option>
+                        <option value="xinghuo">星火</option>
+                    </select>
+                </div>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>

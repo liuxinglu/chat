@@ -111,6 +111,23 @@
                     {{ form.password(class="form-control input-fixed-width") }}
                 </div>
             </div>
+            <div class="form-group row">
+                <label for="{{ form.remember_me.id }}" class="col-sm-2 col-form-label">
+                    <lable for="{{ form.remember_me.id }}">记住我</lable>
+                </label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.remember_me() }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="{{ form.captcha.id }}" class="col-sm-2 col-form-label">
+                    <label for="{{ form.captcha.id }}}">验证码</label>
+                </label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.captcha(size=6) }}
+                    <img src="{{ url_for('auth.captcha') }}" alt="Captcha" onclick="this.src='{{ url_for('auth.captcha') }}?' + Math.random();">
+                </div>
+            </div>
             <div class="mb-3">
                 {{ form.submit(class="btn btn-primary w-100") }}
             </div>

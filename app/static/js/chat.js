@@ -9,29 +9,42 @@ function sendMessage() {
     document.getElementById('userInput').value = '';
 
     // 发送请求到后端
-    fetch('/openapi/chat', {
-        method: 'POST',
+    fetch('/pageops/getModel', {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: userInput })
+        }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
+    .then(response => response.json())
     .then(data => {
-        if (data.reply) {
-            appendMessage('bot-message', '回复: ' + data.reply);
-        } else {
-            appendMessage('bot-message', '回复: 无法获取回复');
-        }
+        fetch('/' + data.model + '/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: userInput })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+        .then(data => {
+            if (data.reply) {
+                appendMessage('bot-message', '回复: ' + data.reply);
+            } else {
+                appendMessage('bot-message', '回复: 无法获取回复');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            appendMessage('bot-message', `回复: 请求失败 (${error.message})`);
+        });
     })
     .catch(error => {
-        console.error('Error:', error);
-        appendMessage('bot-message', `回复: 请求失败 (${error.message})`);
+            console.error('Error:', error);
+            appendMessage('bot-message', '获取模型失败');
     });
 }
 
@@ -114,24 +127,37 @@ function getKeywords() {
     document.getElementById('userInput').value = '';
 
     // 发送请求到后端
-    fetch('/openapi/getKeyword', {
-        method: 'POST',
+    fetch('/pageops/getModel', {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: userInput+ "提取关键字" })
+        }
     })
     .then(response => response.json())
     .then(data => {
-        if (data.reply) {
-            appendMessage('bot-message', '回复: ' + data.reply);
-        } else {
-            appendMessage('bot-message', '回复: 无法获取回复');
-        }
+        fetch('/' + data.model + '/getKeyword', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: userInput+ "提取关键字" })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.reply) {
+                appendMessage('bot-message', '回复: ' + data.reply);
+            } else {
+                appendMessage('bot-message', '回复: 无法获取回复');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            appendMessage('bot-message', '回复: 请求失败');
+        });
     })
     .catch(error => {
-        console.error('Error:', error);
-        appendMessage('bot-message', '回复: 请求失败');
+            console.error('Error:', error);
+            appendMessage('bot-message', '获取模型失败');
     });
 }
 

@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, session
+from flask import Blueprint, render_template, redirect, url_for, flash, session, current_app
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import check_password_hash
 from app.database import db
 from app.model.models import User
 from .forms import RegistrationForm
 from .forms import LoginForm
+from io import BytesIO
+from app.tool.base_tool import generate_captcha
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -30,11 +32,26 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flash('用户名或密码无效', category='error')
             return redirect(url_for('auth.login'))
+        if form.captcha.data.lower() != session.get('captcha', ''):
+            flash('验证码不正确', 'danger')
+            return redirect(url_for('auth.login'))
+
         login_user(user)
         session['user_id'] = user.id
         flash('登录成功！', category='success')
         return redirect(url_for('index'))
-    return render_template('auth/login.html', form=form)
+    captcha_image, _ = generate_captcha()
+    return render_template('auth/login.html', form=form, captcha_image=captcha_image)
+
+
+@auth_bp.route('/captcha')
+def captcha():
+    image, captcha_text = generate_captcha()
+    buf = BytesIO()
+    image.save(buf, 'jpeg')
+    buf_str = buf.getvalue()
+    response = current_app.response_class(response=buf_str, status=200, mimetype='image/jpeg')
+    return response
 
 
 @auth_bp.route('/logout')

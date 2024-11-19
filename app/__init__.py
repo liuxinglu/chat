@@ -43,12 +43,12 @@ def create_app():
 
     # 文心一言openapi
     from .wenxin.route_openapi import openapi_bp
-    app.register_blueprint(openapi_bp, url_prefix='/openapi')
+    app.register_blueprint(openapi_bp, url_prefix='/wenxin')
 
 
     # 讯飞星火api
-    # from .xinghuo.route_openapi import xinghuoapi_bp
-    # app.register_blueprint(xinghuoapi_bp, url_prefix='/openapi')
+    from .xinghuo.route_openapi import xinghuoapi_bp
+    app.register_blueprint(xinghuoapi_bp, url_prefix='/xinghuo')
 
     #pdf文件操作
     from .fileops.fileops import fileops_bp
