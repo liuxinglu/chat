@@ -8,8 +8,24 @@
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/css/styles1.css">
+    <link rel="stylesheet" href="../static/css/flash.css">
 </head>
 <body class="bg-light">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashes" id="flash-messages1">
+      {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+<div class="position-fixed top-0 middle p-3" style="z-index: 5; right: 0; top: 0;">
+  <div id="toast-container" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body">
+    </div>
+  </div>
+</div>
     <!-- Wrapper -->
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
@@ -20,7 +36,8 @@
                     功能列表 <span class="bi bi-chevron-down ms-auto"></span>
                 </button>
                 <div class="collapse" id="funCollapse">
-                    <a href="#" id="usersCollapse" class="list-group-item list-group-item-action btn btn-link">- 关键字提取</a>
+                    <a href="#" id="userKeyword" class="list-group-item list-group-item-action btn btn-link">- 关键字提取</a>
+                    <a href="#" id="userChat" class="list-group-item list-group-item-action btn btn-link">- 自由对话</a>
                 </div>
             </div>
             <div class="list-group list-group-flush">

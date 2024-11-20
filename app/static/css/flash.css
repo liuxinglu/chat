@@ -1,0 +1,46 @@
+.flashes {
+    position: fixed; /* 使用固定定位 */
+    top: 20px; /* 距离页面顶部20px */
+    right: 20px; /* 距离页面右侧20px，你可以根据需要调整 */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    z-index: 1000; /* 确保flash消息在其他内容之上 */
+    width: 300px; /* 设置一个宽度，或者根据需要使用auto */
+}
+
+.flashes li {
+    background-color: #fff; /* 背景色，可以根据需要更改 */
+    color: #000; /* 文字颜色 */
+    border: 1px solid #ccc; /* 边框颜色 */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px; /* 圆角 */
+    opacity: 0; /* 初始透明度为0，用于淡入效果 */
+    transform: translateY(20px); /* 初始位置稍微向下偏移，用于滑动效果 */
+    animation: fadeInSlideDown 0.5s forwards ease-out; /* 应用淡入和滑动向下的动画 */
+}
+
+/* 定义淡入和滑动向下的动画 */
+@keyframes fadeInSlideDown {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 为不同类型的flash消息添加样式 */
+.flashes li.success {
+    border-color: #d4edda;
+    background-color: #e2f0eb;
+}
+
+.flashes li.error {
+    border-color: #f5c6cb;
+    background-color: #f8d7da;
+}
+
+/* 添加一个隐藏flash消息的类 */
+.hidden {
+    display: none;
+}

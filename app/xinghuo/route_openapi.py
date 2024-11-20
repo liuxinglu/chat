@@ -23,7 +23,7 @@ def chat():
     SparkApi.answer = ""
     SparkApi.main(spark_app_id, spark_api_key, spark_api_secret, spark_api_url, spark_llm_domain, text)
     text = baseTool.checklen(baseTool.getText("assistant", SparkApi.answer))
-    return jsonify({'reply':  SparkApi.answer.replace('。', '。\n')})
+    return jsonify({'reply':  SparkApi.answer})
 
 @xinghuoapi_bp.route('/getKeyword', methods=['POST'])
 def getKeyword():
@@ -35,5 +35,5 @@ def getKeyword():
     question = baseTool.checklen(baseTool.getText("user", user_input))
     SparkApi.main(spark_app_id, spark_api_key, spark_api_secret, spark_api_url, spark_llm_domain, question)
     baseTool.getText("assistant", SparkApi.answer)
-    return jsonify({'reply':  SparkApi.answer.replace('。', '。\n')})
+    return jsonify({'reply':  SparkApi.answer})
 

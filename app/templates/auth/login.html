@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
     <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/css/flash.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <style>
+    <style>
        /* 在你的<style>标签内或外部CSS文件中添加以下样式 */
        body {
             font-family: Arial, sans-serif;
@@ -21,67 +22,20 @@
             border-radius: 5px;
             width: 90%;
         }
-.flashes {
-    position: fixed; /* 使用固定定位 */
-    top: 20px; /* 距离页面顶部20px */
-    right: 20px; /* 距离页面右侧20px，你可以根据需要调整 */
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    z-index: 1000; /* 确保flash消息在其他内容之上 */
-    width: 300px; /* 设置一个宽度，或者根据需要使用auto */
-}
+        .input-fixed-width {
+            width: 100%; /* 根据布局需求调整宽度 */
+            box-sizing: border-box; /* 确保padding和border不会增加总宽度 */
+        }
 
-.flashes li {
-    background-color: #fff; /* 背景色，可以根据需要更改 */
-    color: #000; /* 文字颜色 */
-    border: 1px solid #ccc; /* 边框颜色 */
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px; /* 圆角 */
-    opacity: 0; /* 初始透明度为0，用于淡入效果 */
-    transform: translateY(20px); /* 初始位置稍微向下偏移，用于滑动效果 */
-    animation: fadeInSlideDown 0.5s forwards ease-out; /* 应用淡入和滑动向下的动画 */
-}
+        /* 增加.form-group类的底部外边距以增大行间距 */
+        .form-group {
+            margin-bottom: 20px; /* 根据需要调整间距大小 */
+        }
 
-/* 定义淡入和滑动向下的动画 */
-@keyframes fadeInSlideDown {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 为不同类型的flash消息添加样式 */
-.flashes li.success {
-    border-color: #d4edda;
-    background-color: #e2f0eb;
-}
-
-.flashes li.error {
-    border-color: #f5c6cb;
-    background-color: #f8d7da;
-}
-
-/* 添加一个隐藏flash消息的类 */
-.hidden {
-    display: none;
-}
-
-            .input-fixed-width {
-                width: 100%; /* 根据布局需求调整宽度 */
-                box-sizing: border-box; /* 确保padding和border不会增加总宽度 */
-            }
-
-            /* 增加.form-group类的底部外边距以增大行间距 */
-            .form-group {
-                margin-bottom: 20px; /* 根据需要调整间距大小 */
-            }
-
-            /* 可选：为最后一个.form-group（通常是提交按钮）添加特殊样式以去除底部外边距 */
-            .form-group.last {
-                margin-bottom: 0;
-            }
+        /* 可选：为最后一个.form-group（通常是提交按钮）添加特殊样式以去除底部外边距 */
+        .form-group.last {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -155,7 +109,7 @@
                 // setTimeout(function() { $(this).fadeOut(500); }.bind(this), index * 500);
             });
             // 如果你想要整个列表在动画完成后从DOM中移除（可选）
-            // $('#flash-messages').remove();
+            $('#flash-messages').remove();
         }, 1000 + 500); // 1000ms等待动画完成，再加上500ms的fadeOut时间
     }
 });

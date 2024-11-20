@@ -123,8 +123,8 @@ uploadHistoryList = []; // 存储上传历史的数组
 function getKeywords() {
     const userInput = document.getElementById('result').textContent;
     // 在页面显示用户的消息
-    appendMessage('user-message', '用户: '  + "提取关键字");
-    document.getElementById('userInput').value = '';
+//    appendMessage('user-message', '用户: '  + "提取关键字");
+//    document.getElementById('userInput').value = '';
 
     // 发送请求到后端
     fetch('/pageops/getModel', {
@@ -145,14 +145,14 @@ function getKeywords() {
         .then(response => response.json())
         .then(data => {
             if (data.reply) {
-                appendMessage('bot-message', '回复: ' + data.reply);
+                appendMessage('bot-message', data.reply);
             } else {
-                appendMessage('bot-message', '回复: 无法获取回复');
+                appendMessage('bot-message', '无法获取回复');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            appendMessage('bot-message', '回复: 请求失败');
+            appendMessage('bot-message', '请求失败');
         });
     })
     .catch(error => {

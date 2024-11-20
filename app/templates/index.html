@@ -3,22 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文心一言对话系统</title>
-
+    <title>提取关键字</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/styles.css" />
     <script src="../static/js/chat.js"></script>
 </head>
 <body class="bg-light">
 <!-- 在你的HTML模板的<body>标签内，通常是在顶部或导航栏下方 -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class="flashes" id="flash-messages">
-      {% for category, message in messages %}
-        <li class="{{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
     <div class="container py-5">
         <div class="card shadow-sm">
             <div class="row">
@@ -28,15 +20,6 @@
                     <div id="chatBox" class="border rounded p-3 mb-3" style="height: 400px; overflow-y: auto;">
                         <!-- 对话内容将在这里显示 -->
                     </div>
-
-                    <!-- Input and Send Button -->
-                    <div class="input-group mb-3">
-                        <label for="userInput" class="visually-hidden">输入消息</label>
-                        <input type="text" id="userInput" class="form-control" placeholder="输入消息...">
-                        <button class="btn btn-primary" onclick="sendMessage()">发送</button>
-                    </div>
-
-
                 </div>
             </div>
             <div class="col-md-6">
@@ -65,30 +48,6 @@
     </div>
 </body>
 <script>
-        document.getElementById('userInput').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-        $(document).ready(function() {
-            // 检查是否有flash消息
-            if ($('#flash-messages li').length > 0) {
-                // 等待动画完成后再设置定时器隐藏flash消息
-                setTimeout(function() {
-                    $('#flash-messages li').each(function(index) {
-                        // 为每个flash消息元素添加淡出动画
-                        $(this).fadeOut(500, function() {
-                            // 淡出完成后添加hidden类以隐藏元素（可选，因为fadeOut已经隐藏了元素）
-                            $(this).addClass('hidden');
-                        });
-                        // 如果你想要它们逐个消失，可以使用延迟
-                        // setTimeout(function() { $(this).fadeOut(500); }.bind(this), index * 500);
-                    });
-                    // 如果你想要整个列表在动画完成后从DOM中移除（可选）
-                    // $('#flash-messages').remove();
-                }, 1000 + 500); // 1000ms等待动画完成，再加上500ms的fadeOut时间
-            }
-        });
         // 获取并显示用户上传历史
         $(document).ready(function () {
             fetch('/fileops/history')
