@@ -3,16 +3,17 @@ import json
 import os
 from flask import Blueprint, request, jsonify,session
 from app.tool import base_tool
+from app.config import Config
 
 openapi_bp = Blueprint('wenxin_openapi', __name__)
 text = []
 baseTool = base_tool.BaseTool()
 conversation_id = ""
-app_id = os.getenv('APP_ID')
+app_id = Config.APP_ID
 
 
 def get_access_token():
-    url = f"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={os.getenv('API_KEY')}&client_secret={os.getenv('SECRET_KEY')}"
+    url = f"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={Config.API_KEY}&client_secret={Config.SECRET_KEY}"
 
     payload = json.dumps("")
     headers = {

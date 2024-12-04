@@ -50,7 +50,7 @@ def create_app():
     from .xinghuo.route_openapi import xinghuoapi_bp
     app.register_blueprint(xinghuoapi_bp, url_prefix='/xinghuo')
 
-    #pdf文件操作
+    #文件操作
     from .fileops.fileops import fileops_bp
     app.register_blueprint(fileops_bp, url_prefix='/fileops')
 

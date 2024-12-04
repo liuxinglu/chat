@@ -73,6 +73,23 @@ $(document).ready(function () {
     });
 
     // 监听侧边栏链接的点击事件
+    $('#dashboard').click(function(e) {
+        e.preventDefault(); // 阻止默认的链接跳转行为
+
+        // 使用AJAX加载index.html的内容
+        $.ajax({
+            url: '/pageops/getBankPage', // 确保这里的路径是正确的
+            method: 'GET',
+            success: function(data) {
+                // 将加载的内容放入#content-container中
+                $('#container-fluid').html(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error loading index.html: ' + textStatus, errorThrown);
+            }
+        });
+    });
+
     $('#userKeyword').click(function(e) {
         e.preventDefault(); // 阻止默认的链接跳转行为
 

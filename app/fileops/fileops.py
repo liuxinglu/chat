@@ -69,5 +69,25 @@ def get_upload_history():
 
     user_id = session['user_id']
     files = UploadedFile.query.filter_by(user_id=user_id).all()
-    file_data = [{'filename': f.filename, 'upload_date': f.upload_date, 'content': f.content} for f in files]
+    file_data = [{'fileid': f.id, 'filename': f.filename, 'upload_date': f.upload_date, 'content': f.content} for f in files]
     return jsonify(file_data), 200
+
+
+@fileops_bp.route('/deleteFile', methods=['POST'])
+@login_required
+def delete_file():
+    if 'user_id' not in session:
+        print('User not authenticated')
+        return jsonify({'error': 'User not authenticated'}), 401
+    data = request.get_json()
+    file_id = data.get('fileId')
+
+    user_id = session['user_id']
+    file_to_delete = UploadedFile.query.filter_by(user_id=user_id, id=file_id).first()
+
+    if not file_to_delete:
+        return jsonify({'error': 'File not found'}), 404
+
+    db.session.delete(file_to_delete)
+    db.session.commit()
+    return jsonify({'message': '删除成功'}), 200
