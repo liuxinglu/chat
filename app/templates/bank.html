@@ -2,9 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI HUB with Clickable Rounded Squares</title>
+    <!-- 引入Bootstrap CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .clickable-square {
+            cursor: pointer; /* 更改鼠标悬停时的光标样式 */
+            width: 200px; /* 设置正方形宽度 */
+            height: 200px; /* 设置正方形高度 */
+            display: flex; /* 允许使用flex布局 */
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            border-radius: 15px; /* 设置圆角大小 */
+        }
+    </style>
 </head>
 <body>
+    <div class="container-fluid" id="container-fluid">
+        <h1 class="mt-4 text-center">AI HUB</h1>
+        <div class="row justify-content-center mt-4"> <!-- 添加mt-4来增加上边距 -->
+            <div class="col-md-6">
+                <div class="clickable-square bg-success text-white" id="fileops">
+                    文件操作
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="clickable-square bg-success text-white" id="chatops">
+                    智能对话
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- 引入Bootstrap JS和依赖（Popper.js和Bootstrap的bundle） -->
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $('#fileops').click(function(e) {
+            $.ajax({
+                url: '/pageops/fileops', // 确保这里的路径是正确的
+                method: 'GET',
+                success: function(data) {
+                    // 将加载的内容放入#content-container中
+                    $('#container-fluid').html(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error loading index.html: ' + textStatus, errorThrown);
+                }
+            });
+        });
+
+        $('#chatops').click(function(e) {
+            alert('正方形 2 被点击了！');
+        });
+    </script>
 </body>
 </html>

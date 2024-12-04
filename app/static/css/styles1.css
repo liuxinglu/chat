@@ -88,3 +88,13 @@ body {
     }
 
 }
+
+.clickable-square {
+            cursor: pointer; /* 更改鼠标悬停时的光标样式 */
+            width: 200px; /* 设置正方形宽度 */
+            height: 200px; /* 设置正方形高度 */
+            display: flex; /* 允许使用flex布局 */
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            border-radius: 15px; /* 设置圆角大小 */
+        }

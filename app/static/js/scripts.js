@@ -16,6 +16,7 @@ $(document).ready(function () {
         }, 1000 + 500); // 1000ms等待动画完成，再加上500ms的fadeOut时间
     }
 
+
     $("#menu-toggle").click(function (e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
@@ -75,69 +76,74 @@ $(document).ready(function () {
     // 监听侧边栏链接的点击事件
     $('#dashboard').click(function(e) {
         e.preventDefault(); // 阻止默认的链接跳转行为
+        $('#container-fluid').empty();
+        var htmldata = `<div id="default" class="row justify-content-center mt-4">
+                    <div class="col-md-6">
+                        <div class="clickable-square bg-success text-white" id="fileops">
+                            文件操作
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="clickable-square bg-success text-white" id="chatops">
+                            智能对话
+                        </div>
+                    </div>
+                </div>`;
+        $('#container-fluid').html(htmldata)
+    });
 
-        // 使用AJAX加载index.html的内容
+
+
+    // 使用事件委托绑定动态元素的事件
+    $('#container-fluid').on('click', '#fileops, #chatops', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        var url = $this.is('#fileops') ? '/pageops/fileops' : '/pageops/chatops';
+        loadMenuAndContent($this.attr('id'), url);
+    });
+
+    function loadMenuAndContent(elementId, menuUrl) {
         $.ajax({
-            url: '/pageops/getBankPage', // 确保这里的路径是正确的
+            url: menuUrl,
             method: 'GET',
             success: function(data) {
-                // 将加载的内容放入#content-container中
+                var $menusContainer = $('#menus');
+                $menusContainer.empty();
+                data.menu.forEach(function(menuItem) {
+                    var $a = $('<a>', {
+                        href: '#',
+                        'class': 'list-group-item list-group-item-action btn btn-link',
+                        text: menuItem.content
+                    }).attr('id', menuItem.id);
+                    $menusContainer.append($a);
+                });
+
+                // 假设 #userKeyword 或 #userChat 是新加载的菜单项之一，它们的事件已经被上面的事件委托处理了
+                // 因此，这里不需要再次绑定它们的事件
+                $('#userKeyword, #userChat').on('click', function(e) {
+                    e.preventDefault();
+                    var url = $(this).is('#userKeyword') ? '/pageops/getKeywordPage' : '/pageops/getChatPage';
+                    loadContent(url);
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error loading menu: ' + textStatus, errorThrown);
+                // 可以在这里向用户显示错误消息
+            }
+        });
+    }
+
+    function loadContent(contentUrl) {
+        $.ajax({
+            url: contentUrl,
+            method: 'GET',
+            success: function(data) {
                 $('#container-fluid').html(data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Error loading index.html: ' + textStatus, errorThrown);
+                console.error('Error loading content: ' + textStatus, errorThrown);
+                // 可以在这里向用户显示错误消息
             }
         });
-    });
-
-    $('#userKeyword').click(function(e) {
-        e.preventDefault(); // 阻止默认的链接跳转行为
-
-        // 使用AJAX加载index.html的内容
-        $.ajax({
-            url: '/pageops/getKeywordPage', // 确保这里的路径是正确的
-            method: 'GET',
-            success: function(data) {
-                // 将加载的内容放入#content-container中
-                $('#container-fluid').html(data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Error loading index.html: ' + textStatus, errorThrown);
-            }
-        });
-    });
-
-    $('#userChat').click(function(e) {
-        e.preventDefault(); // 阻止默认的链接跳转行为
-
-        // 使用AJAX加载index.html的内容
-        $.ajax({
-            url: '/pageops/getChatPage', // 确保这里的路径是正确的
-            method: 'GET',
-            success: function(data) {
-                // 将加载的内容放入#content-container中
-                $('#container-fluid').html(data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Error loading index.html: ' + textStatus, errorThrown);
-            }
-        });
-    });
-
-    $('#usersCollapse2').click(function(e) {
-        e.preventDefault(); // 阻止默认的链接跳转行为
-
-        // 使用AJAX加载index.html的内容
-        $.ajax({
-            url: '/pageops/getBankPage', // 确保这里的路径是正确的
-            method: 'GET',
-            success: function(data) {
-                // 将加载的内容放入#content-container中
-                $('#container-fluid').html(data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Error loading index.html: ' + textStatus, errorThrown);
-            }
-        });
-    });
+    }
 });
