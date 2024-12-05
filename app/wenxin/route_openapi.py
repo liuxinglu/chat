@@ -48,10 +48,7 @@ def getKeyword():
 
     url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-128k?access_token=" + get_access_token()
     text = baseTool.getText("user", user_input)
-    current_file_path = os.path.abspath(__file__)
-    # 获取当前文件的目录
-    current_directory = os.path.dirname(current_file_path)
-    with open(os.path.join(os.path.dirname(current_directory), 'static/promt/prompt1.txt'), 'r', encoding='utf-8') as file:
+    with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static/promt/prompt1.txt'), 'r', encoding='utf-8') as file:
         prompt = file.read()
     payload = {
         "messages": text,
