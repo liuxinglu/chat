@@ -13,6 +13,8 @@ class Config:
     APP_ID = '116122057'
     API_KEY = 'HxfskAbMtUeCRHKEuPk4Fvu0'
     SECRET_KEY = 'XdXaXciB6TWnqe5sRSrdxEvPodW5zszK'
+    AZURE_SPEECH_KEY = 'your_azure_speech_key'
+    AZURE_SPEECH_REGION = 'your_azure_speech_region'
 
 
 def appconfig(env_path=None):
