@@ -16,6 +16,7 @@ baseTool = base_tool.BaseTool()
 @xinghuoapi_bp.route('/chat', methods=['POST'])
 @login_required
 def chat():
+    global text
     user_input = request.json.get('message')
     if not user_input:
         return jsonify({'error': 'No message provided'}), 400

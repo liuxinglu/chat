@@ -14,15 +14,15 @@ app_id = Config.APP_ID
 
 def get_access_token():
     url = f"https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={Config.API_KEY}&client_secret={Config.SECRET_KEY}"
+    response = requests.post(url, verify=False)
+    response_data = response.json()
+    return response_data.get("access_token")
 
-    payload = json.dumps("")
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-
-    response = requests.request("POST", url, headers=headers, data=payload, verify=False)
-    return response.json().get("access_token")
+def send_request_to_baidu_api(url, payload):
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, headers=headers, json=payload, verify=False)
+    response_data = response.json()
+    return response_data
 
 @openapi_bp.route('/chat', methods=['POST'])
 def chat():
@@ -32,21 +32,12 @@ def chat():
         return jsonify({'error': 'No message provided'}), 400
 
     url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-128k?access_token=" + get_access_token()
-
     text = baseTool.checklen(baseTool.getText("user", user_input))
-    payload = {
-        "messages": text
-    }
-
-    headers = {
-        'Content-Type': 'application/json',
-    }
-    response = requests.request("POST", url, headers=headers, json=payload, verify=False)
-    rep = json.loads(response.text)
-    print(response.text)
-
-    text = baseTool.checklen(baseTool.getText("assistant", rep.get('result')))
-    return jsonify({'reply': rep.get('result')})
+    payload = {"messages": text}
+    response = send_request_to_baidu_api(url, payload)
+    print(response.get('result'))
+    text = baseTool.checklen(baseTool.getText("assistant", response.get('result')))
+    return jsonify({'reply': response.get('result')})
 
 @openapi_bp.route('/getKeyword', methods=['POST'])
 def getKeyword():
@@ -56,7 +47,6 @@ def getKeyword():
         return jsonify({'error': 'No message provided'}), 400
 
     url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-128k?access_token=" + get_access_token()
-
     text = baseTool.getText("user", user_input)
     payload = {
         "messages": text,
@@ -177,15 +167,11 @@ Output:
 }
 '''
     }
+    response = send_request_to_baidu_api(url, payload)
+    if response.get('error_code')  is not None:
+        return jsonify({'reply': response.get('error_msg')})
 
-    headers = {
-        'Content-Type': 'application/json',
-    }
-    response = requests.request("POST", url, headers=headers, json=payload, verify=False)
-    rep = json.loads(response.text)
-    print(response.text)
+    print(response.get('result'))
+    text = baseTool.getText("assistant", response.get('result'))
+    return jsonify({'reply': response.get('result')})
 
-    if rep.get('error_code')  is not None:
-        return jsonify({'reply': rep.get('error_msg')})
-    text = baseTool.getText("assistant", rep.get('result'))
-    return jsonify({'reply': rep.get('result')})
