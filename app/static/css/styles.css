@@ -123,3 +123,17 @@ body {
 .hidden {
     display: none;
 }
+
+/* 设置label文字居右并减小字体 */
+.info-label .right-label {
+    text-align: right; /* 文字居右 */
+    font-size: 0.875rem; /* 减小字体大小，例如设置为比默认稍小 */
+    width: 100%;
+}
+
+/* 为info-content div添加淡黄色背景 */
+.info-content {
+    background-color: #fffacd; /* 淡黄色背景 */
+    padding: 10px; /* 可选：为内容添加内边距以改善可读性 */
+    margin-top: 10px; /* 可选：为内容与上方元素间添加间距 */
+}

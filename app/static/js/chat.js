@@ -9,42 +9,29 @@ function sendMessage() {
     document.getElementById('userInput').value = '';
 
     // 发送请求到后端
-    fetch('/pageops/getModel', {
-        method: 'GET',
+    fetch('/xinghuo/chat', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: userInput })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+    .then(data => {
+        if (data.reply) {
+            appendMessage('bot-message', '回复: ' + data.reply);
+        } else {
+            appendMessage('bot-message', '回复: 无法获取回复');
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        fetch('/' + data.model + '/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: userInput })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-          })
-        .then(data => {
-            if (data.reply) {
-                appendMessage('bot-message', '回复: ' + data.reply);
-            } else {
-                appendMessage('bot-message', '回复: 无法获取回复');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            appendMessage('bot-message', `回复: 请求失败 (${error.message})`);
-        });
-    })
     .catch(error => {
-            console.error('Error:', error);
-            appendMessage('bot-message', '获取模型失败');
+        console.error('Error:', error);
+        appendMessage('bot-message', `回复: 请求失败 (${error.message})`);
     });
 }
 
@@ -83,7 +70,7 @@ uploadHistoryList = []; // 存储上传历史的数组
     var form = document.getElementById('uploadForm');
     var formData = new FormData(form);
 
-    fetch('/fileops/upload', {
+    fetch('/domain/upload', {
         method: 'POST',
         body: formData
     })
@@ -135,7 +122,7 @@ function getKeywords() {
     })
     .then(response => response.json())
     .then(data => {
-        fetch('/' + data.model + '/getKeyword', {
+        fetch('/wenxin/getKeyword', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -216,13 +203,13 @@ function viewFileContent(index) {
 function deleteFile(index) {
     console.log(uploadHistoryList[index].fileId)
     $.ajax({
-        url: '/fileops/deleteFile',
+        url: '/domain/deleteFile',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ fileId: uploadHistoryList[index].fileId }),
         success: function(data) {
             if (data.message) {
-                fetch('/fileops/history')
+                fetch('/domain/history')
                     .then(response => response.json())
                     .then(data => {
                         if (data.error) {
@@ -253,3 +240,4 @@ function scrollToLatestUpload() {
     const historyList = document.getElementById("uploadHistory");
     historyList.scrollTop = historyList.scrollHeight; // 将滚动位置设置为列表的最大高度
 }
+

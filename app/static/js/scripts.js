@@ -78,27 +78,40 @@ $(document).ready(function () {
         e.preventDefault(); // 阻止默认的链接跳转行为
         $('#container-fluid').empty();
         var htmldata = `<div id="default" class="row justify-content-center mt-4">
-                    <div class="col-md-6">
-                        <div class="clickable-square bg-success text-white" id="fileops">
-                            文件操作
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="clickable-square bg-success text-white" id="chatops">
-                            智能对话
-                        </div>
-                    </div>
-                </div>`;
+                            <div class="col-md-7">
+                                <img src="../static/img/web_illustration.png"/>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="clickable-square bg-success text-white" id="domain">
+                                    AI Domain Solution
+                                </div>
+                                <div class="clickable-square bg-success text-white" id="servicedesk">
+                                    AI Service Desk
+                                </div>
+                                <div class="clickable-square bg-success text-white" id="security">
+                                    AI Security Solution
+                                </div>
+                                <div class="clickable-square bg-success text-white" id="cloud">
+                                    AI Cloud Solution
+                                </div>
+                            </div>
+                        </div>`;
         $('#container-fluid').html(htmldata)
     });
 
 
 
     // 使用事件委托绑定动态元素的事件
-    $('#container-fluid').on('click', '#fileops, #chatops', function(e) {
+    $('#container-fluid').on('click', '#domain, #servicedesk', function(e) {
         e.preventDefault();
         var $this = $(this);
-        var url = $this.is('#fileops') ? '/pageops/fileops' : '/pageops/chatops';
+        var url = '/pageops/servicedesk';
+        if ($this.is('#domain')){
+            url = '/pageops/domain';
+        }
+        else if($this.is('#servicedesk')) {
+            url ='/pageops/servicedesk';
+        }
         loadMenuAndContent($this.attr('id'), url);
     });
 
@@ -120,9 +133,15 @@ $(document).ready(function () {
 
                 // 假设 #userKeyword 或 #userChat 是新加载的菜单项之一，它们的事件已经被上面的事件委托处理了
                 // 因此，这里不需要再次绑定它们的事件
-                $('#userKeyword, #userChat').on('click', function(e) {
+                $('#userKeyword, #userChat, #servicedeskops_TicketCreation, #securityops, #cloudops').on('click', function(e) {
                     e.preventDefault();
-                    var url = $(this).is('#userKeyword') ? '/pageops/getKeywordPage' : '/pageops/getChatPage';
+                    var url = ' ';
+                    if($(this).is('#userKeyword')) {
+                        url = '/pageops/getKeywordPage';
+                    }
+                    else if ($(this).is('#servicedeskops_TicketCreation')){
+                        url = '/pageops/getTicketCreationPage';
+                    }
                     loadContent(url);
                 });
             },

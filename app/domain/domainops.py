@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, session
 from flask_login import login_required
 from app.services.file_ops_service import FileOpsService
 
-fileops_bp = Blueprint('file_ops', __name__)
+fileops_bp = Blueprint('domain_ops', __name__)
 file_ops_service = FileOpsService()
 
 @fileops_bp.route('/upload', methods=['POST'])

@@ -51,11 +51,11 @@ def create_app():
     app.register_blueprint(xinghuoapi_bp, url_prefix='/xinghuo')
 
     #文件操作
-    from .fileops.fileops import fileops_bp
-    app.register_blueprint(fileops_bp, url_prefix='/fileops')
+    from .domain.domainops import fileops_bp
+    app.register_blueprint(fileops_bp, url_prefix='/domain')
 
     # 页面操作
-    from .control.routes import pageops_bp
+    from .pagecontrol.routes import pageops_bp
     app.register_blueprint(pageops_bp, url_prefix='/pageops')
 
 
