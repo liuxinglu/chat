@@ -41,12 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function sendMessage() {
+function minisendMessage() {
         const userInput = document.getElementById('umessage').value;
         if (!userInput) return;
 
         // 在页面显示用户的消息
-        appendMessage('miniuser-message', '用户: '  + userInput);
+        miniappendMessage('miniuser-message', '用户: '  + userInput);
         document.getElementById('umessage').value = '';
 
         // 发送请求到后端
@@ -65,41 +65,41 @@ function sendMessage() {
           })
         .then(data => {
             if (data.reply) {
-                appendMessage('minibot-message', '回复: ' + data.reply);
+                miniappendMessage('minibot-message', '回复: ' + data.reply);
             } else {
-                appendMessage('minibot-message', '回复: 无法获取回复');
+                miniappendMessage('minibot-message', '回复: 无法获取回复');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            appendMessage('minibot-message', `回复: 请求失败 (${error.message})`);
+            miniappendMessage('minibot-message', `回复: 请求失败 (${error.message})`);
         });
     }
 
-    function appendMessage(className, message) {
+    function miniappendMessage(className, message) {
         const chatBox = document.getElementById('minichat-content');
         const messageElement = document.createElement('div');
         messageElement.className = 'message ' + className;
         messageElement.style.whiteSpace = 'pre-wrap';
         messageElement.id = 'message' + messageInd;
         chatBox.appendChild(messageElement);
-        typeText('message'+ messageInd, message, 10)
+        minitypeText('message'+ messageInd, message, 10)
         messageInd++;
 
     }
 
     //打印机效果
-    function typeText(elementId, text, speed) {
+    function minitypeText(elementId, text, speed) {
         const element = document.getElementById(elementId);
         let index = 0;
-        const type = () => {
+        const minitype = () => {
           if (index < text.length) {
             element.textContent += text.charAt(index);
             index++;
-            setTimeout(type, speed);
+            setTimeout(minitype, speed);
             const chatBox = document.getElementById('minichat-content');
             chatBox.scrollTop = chatBox.scrollHeight;
           }
         };
-        type();
+        minitype();
     }

@@ -6,6 +6,7 @@
     <title>AI HUB</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/css/styles1.css">
     <link rel="stylesheet" href="../static/css/flash.css">
@@ -90,19 +91,19 @@
         </div>
     </div>
     <div id="minichat-button" class="floating-button">
-        AI Chat Support
+        <i class="bi bi-chat-dots"></i>AI Chat Support
     </div>
     <div id="minichat-box" class="minichat-box">
         <div class="minichat-header">
             <span class="close-button">&times;</span>
-            <h2>Support</h2>
+            <i class="bi bi-chat-dots"></i>
         </div>
         <div id="minichat-content" class="minichat-content">
             <!-- Chat messages go here -->
         </div>
         <div class="minichat-input">
             <input id="umessage" type="text" placeholder="Type a message...">
-            <button onclick="sendMessage()">Send</button>
+            <button onclick="minisendMessage()">Send</button>
         </div>
     </div>
     <!-- Bootstrap Bundle with Popper -->

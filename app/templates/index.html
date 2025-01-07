@@ -50,7 +50,7 @@
 <script>
         // 获取并显示用户上传历史
         $(document).ready(function () {
-            fetch('/fileops/history')
+            fetch('/domain/history')
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
