@@ -13,7 +13,7 @@ class TicketOpsService:
 
     # Azure Blob Storage configuration
     STORAGE_ACCOUNT_NAME = "stgaiititsm01ea"
-    STORAGE_ACCOUNT_KEY = "7JAMTy+5j9ZkEHQKWMfdAc6A05+EA1e5b0mAb4Ls7N97kMaVHc9CI+y+qNFXdb7Tkj+m51bh7V7i+AStbGxuUA=="
+    STORAGE_ACCOUNT_KEY = ""
     VOICE_CONTAINER_NAME = "aiit-itsm-voice"
     USER_PROMPT_CONTAINER_NAME = "aiit-itsm-userprompt"
     SYSTEM_PROMPT_CONTAINER_NAME = "aiit-itsm-systemprompt"
