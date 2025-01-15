@@ -34,12 +34,10 @@ def create_app():
         file_handler.setLevel(logging.WARNING)
         app.logger.addHandler(file_handler)
 
-    # 注册 Blueprint
+    # 用户登录注册
     from .auth.routes import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
-    # 文心一言SDK
-    # from .wenxin.route_sdk import chat_bp
-    # app.register_blueprint(chat_bp)
+
 
     # 文心一言openapi
     from .wenxin.route_openapi import openapi_bp
@@ -50,13 +48,17 @@ def create_app():
     from .xinghuo.route_openapi import xinghuoapi_bp
     app.register_blueprint(xinghuoapi_bp, url_prefix='/xinghuo')
 
-    #文件操作
-    from .domain.domainops import fileops_bp
-    app.register_blueprint(fileops_bp, url_prefix='/domain')
+    # 领域操作
+    from .domain.domainops import domainops_bp
+    app.register_blueprint(domainops_bp, url_prefix='/domain')
 
     # 页面操作
     from .pagecontrol.routes import pageops_bp
     app.register_blueprint(pageops_bp, url_prefix='/pageops')
+
+    # servicedesk
+    from .servicedesk.servicedeskops import sdops_bp
+    app.register_blueprint(sdops_bp, url_prefix='/servicedesk')
 
 
     return app

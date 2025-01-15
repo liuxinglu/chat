@@ -16,7 +16,7 @@ baseTool = base_tool.BaseTool()
 @xinghuoapi_bp.route('/chat', methods=['POST'])
 @login_required
 def chat():
-    global text
+    global text, is_first
     user_input = request.json.get('message')
     if not user_input:
         return jsonify({'error': 'No message provided'}), 400
@@ -26,15 +26,5 @@ def chat():
     text = baseTool.checklen(baseTool.getText("assistant", SparkApi.answer))
     return jsonify({'reply':  SparkApi.answer})
 
-@xinghuoapi_bp.route('/getKeyword', methods=['POST'])
-def getKeyword():
-    user_input = request.json.get('message')
-    if not user_input:
-        return jsonify({'error': 'No message provided'}), 400
 
-    SparkApi.answer = ""
-    question = baseTool.checklen(baseTool.getText("user", user_input))
-    SparkApi.main(spark_app_id, spark_api_key, spark_api_secret, spark_api_url, spark_llm_domain, question)
-    baseTool.getText("assistant", SparkApi.answer)
-    return jsonify({'reply':  SparkApi.answer})
 

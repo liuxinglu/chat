@@ -49,7 +49,9 @@ class BaseTool():
             length += leng
         return length
 
-    def checklen(self, text):
+    def checklen(self, text=None):
+        if text == None:
+            text = self.__text
         while (self.getlength(text) > 8000):
             if len(text) == 1:
                 text[0]['content'] = text[0]['content'][1:8000]
@@ -57,3 +59,5 @@ class BaseTool():
                 del text[0]
         return text
 
+    def text(self):
+        return self.__text

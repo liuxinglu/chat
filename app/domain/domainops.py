@@ -4,10 +4,10 @@ from flask import Blueprint, request, jsonify, session
 from flask_login import login_required
 from app.services.file_ops_service import FileOpsService
 
-fileops_bp = Blueprint('domain_ops', __name__)
+domainops_bp = Blueprint('domain_ops', __name__)
 file_ops_service = FileOpsService()
 
-@fileops_bp.route('/upload', methods=['POST'])
+@domainops_bp.route('/upload', methods=['POST'])
 @login_required
 def upload_file():
     if 'user_id' not in session:
@@ -28,7 +28,7 @@ def upload_file():
     else:
         return jsonify({'error': 'File must be a PDF'}), 400
 
-@fileops_bp.route('/getFile', methods=['GET'])
+@domainops_bp.route('/getFile', methods=['GET'])
 @login_required
 def getFile():
     filename = request.args.get('filename')
@@ -37,7 +37,7 @@ def getFile():
         'message': 'File content retrieved',
         'text': content}), 200
 
-@fileops_bp.route('/history', methods=['GET'])
+@domainops_bp.route('/history', methods=['GET'])
 @login_required
 def get_upload_history():
     if 'user_id' not in session:
@@ -47,7 +47,7 @@ def get_upload_history():
     file_data = file_ops_service.get_upload_history(user_id)
     return jsonify(file_data), 200
 
-@fileops_bp.route('/deleteFile', methods=['POST'])
+@domainops_bp.route('/deleteFile', methods=['POST'])
 @login_required
 def delete_file():
     if 'user_id' not in session:

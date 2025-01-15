@@ -49,6 +49,7 @@ def getKeyword():
     url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-128k?access_token=" + get_access_token()
     text = baseTool.getText("user", user_input)
     with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static/promt/prompt1.txt'), 'r', encoding='utf-8') as file:
+        # 通过提示词对用户的输入进行过滤提取
         prompt = file.read()
     payload = {
         "messages": text,

@@ -76,27 +76,22 @@ $(document).ready(function () {
     // 监听侧边栏链接的点击事件
     $('#dashboard').click(function(e) {
         e.preventDefault(); // 阻止默认的链接跳转行为
-        $('#container-fluid').empty();
-        var htmldata = `<div id="default" class="row justify-content-center mt-4">
-                            <div class="col-md-7">
-                                <img src="../static/img/web_illustration.png"/>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="clickable-square bg-success text-white" id="domain">
-                                    AI Domain Solution
-                                </div>
-                                <div class="clickable-square bg-success text-white" id="servicedesk">
-                                    AI Service Desk
-                                </div>
-                                <div class="clickable-square bg-success text-white" id="security">
-                                    AI Security Solution
-                                </div>
-                                <div class="clickable-square bg-success text-white" id="cloud">
-                                    AI Cloud Solution
-                                </div>
-                            </div>
-                        </div>`;
-        $('#container-fluid').html(htmldata)
+        var $menusContainer = $('#menus');
+        $menusContainer.empty();
+        var arr = [
+            {"id":"domain", "content":'AI Domain Solution'},
+            {"id":"servicedesk", "content":'AI Service Desk'},
+            {"id":"security", "content":'AI Security Solution'},
+            {"id":"cloud", "content":'AI Cloud Solution'}];
+        arr.forEach(
+            function(menuItem) {
+                var $a = $('<a>', {
+                    href: '#',
+                    'class': 'list-group-item list-group-item-action btn btn-link',
+                    text: menuItem.content
+                }).attr('id', menuItem.id);
+                $menusContainer.append($a);
+            });
     });
 
 
