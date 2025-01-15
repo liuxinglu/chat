@@ -92,12 +92,19 @@ $(document).ready(function () {
                 }).attr('id', menuItem.id);
                 $menusContainer.append($a);
             });
+        $('#container-fluid').empty();
+        var htmldata = `<div id="default" class="row justify-content-center mt-4">
+                            <div class="col-md-12">
+                                <img src="../static/img/web_illustration.png"/>
+                            </div>
+                        </div>`;
+        $('#container-fluid').html(htmldata)
     });
 
 
 
     // 使用事件委托绑定动态元素的事件
-    $('#container-fluid').on('click', '#domain, #servicedesk', function(e) {
+    $('#menus').on('click', '#domain, #servicedesk', function(e) {
         e.preventDefault();
         var $this = $(this);
         var url = '/pageops/servicedesk';

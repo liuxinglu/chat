@@ -6,7 +6,7 @@
     <title>文心一言对话系统</title>
 
     <link rel="stylesheet" href="../static/css/styles.css" />
-    <script src="../static/js/chat.js"></script>
+    <script src="../static/js/ticket.js"></script>
 </head>
 <body class="bg-light">
             <div class="row">
@@ -15,9 +15,11 @@
                         <!-- Chat box -->
                         <div class="row">
                             <div id="chatBox" class="border col-md-6" style="height: 400px; overflow-y: auto;">
+                                <div class="col-md6"><h5>AI ITSM Chat Window</h5></div>
                                 <!-- 对话内容将在这里显示 -->
                             </div>
                             <div id="chatBox2" class="border col-md-6" style="height: 400px; overflow-y: auto;">
+                                <div class="col-md6"><h5>ITSM Ticket Creation Window</h5></div>
                                 <!-- 对话内容2将在这里显示 -->
                             </div>
                         </div>
@@ -53,7 +55,7 @@
 
         document.getElementById('userInput').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                sendMessage();
+                sendUserMessage();
             }
         });
 

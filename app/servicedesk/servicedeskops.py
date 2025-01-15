@@ -31,7 +31,7 @@ def upload_file():
 
     user_id = session['user_id']
     user_text = ticket_ops_service.upload_file(file, user_id)
-    file_text = ticket_ops_service.download_from_blob_storage(ticket_ops_service.SYSTEM_PROMPT_CONTAINER_NAME)
+    file_text = ticket_ops_service.download_from_blob_storage(ticket_ops_service.SYSTEM_PROMPT_CONTAINER_NAME, ticket_ops_service.USER_PROMPT_BLOB_NAME)
     global text, is_first
     if is_first:
         text = baseTool.checklen(baseTool.getText("system", file_text))
@@ -51,12 +51,13 @@ def ticket_desc():
     user_text = request.json.get('message')
     if not user_text:
         return jsonify({'error': 'No message provided'}), 400
-    file_text = ticket_ops_service.download_from_blob_storage(ticket_ops_service.SYSTEM_PROMPT_CONTAINER_NAME)
+    file_text = ticket_ops_service.download_from_blob_storage(ticket_ops_service.SYSTEM_PROMPT_CONTAINER_NAME, ticket_ops_service.USER_PROMPT_BLOB_NAME)
     global text,is_first
     if is_first:
         text = baseTool.checklen(baseTool.getText("system", file_text))
         is_first = False
     text = baseTool.checklen(baseTool.getText("user", user_text))
+    # ticket_ops_service.upload_to_blob_storage(ticket_ops_service.USER_PROMPT_CONTAINER_NAME, ticket_ops_service.USER_PROMPT_BLOB_NAME)
     SparkApi.answer = ""
     SparkApi.main(spark_app_id, spark_api_key, spark_api_secret, spark_api_url, spark_llm_domain, text)
     text = baseTool.checklen(baseTool.getText("assistant", SparkApi.answer))
