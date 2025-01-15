@@ -12,7 +12,7 @@ class TicketOpsService:
     SPEECH_REGION = "your_speech_region"  # e.g., "westus"
 
     # Azure Blob Storage configuration
-    STORAGE_ACCOUNT_NAME = "stgaiititsm01ea"
+    STORAGE_ACCOUNT_NAME = ""
     STORAGE_ACCOUNT_KEY = ""
     VOICE_CONTAINER_NAME = "aiit-itsm-voice"
     USER_PROMPT_CONTAINER_NAME = "aiit-itsm-userprompt"
