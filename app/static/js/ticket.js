@@ -25,6 +25,11 @@ function sendUserMessage() {
     .then(data => {
         if (data.reply) {
             appendMessage('bot-message', data.reply);
+            var $chatbox = $('#chatBox');
+            var $btn = $('<button>', {'class': 'btn btn-primary', text: 'submit'}).attr('id', 'ticketSubmit' + ticketIndex);
+            $chatbox.append($btn);
+            var $hr = $('<hr>');
+            $chatbox.append($hr);
         } else {
             appendMessage('bot-message', '无法获取回复');
         }
@@ -37,7 +42,16 @@ function sendUserMessage() {
 
 function appendMessage(className, message) {
     const chatBox = document.getElementById('chatBox');
-    const messageElement = document.createElement('div');
+    let messageElement = null;
+    if(className == 'user-message'){
+        messageElement = document.createElement('div');
+    }
+    else if(className == 'bot-message') {
+        messageElement = document.createElement('textarea');
+        messageElement.style.width = '100%';
+        messageElement.style.height = '100%';
+    }
+
     messageElement.className = 'message ' + className;
     messageElement.style.whiteSpace = 'pre-wrap';
     messageElement.id = 'message' + ticketIndex;

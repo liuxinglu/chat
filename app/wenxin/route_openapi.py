@@ -19,7 +19,7 @@ def get_access_token():
     return response_data.get("access_token")
 
 def send_request_to_baidu_api(payload):
-    url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-128k?access_token=" + wenxin.get_access_token()
+    url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-128k?access_token=" + get_access_token()
     headers = {'Content-Type': 'application/json'}
     response = requests.post(url, headers=headers, json=payload, verify=False)
     response_data = response.json()

@@ -20,11 +20,12 @@ def create_ticket_to_LLM(user_text):
     }
     response = wenxin.send_request_to_baidu_api(payload)
     print(response.get('result'))
+    result = response.get('result')[15:-3]
     if response.get('error_code') is not None:
         return response.get('error_msg')
 
-    text = baseTool.getText("assistant", response.get('result'))
-    return response.get('result')
+    text = baseTool.getText("assistant", result)
+    return result
 
 @sdops_bp.route('/upload', methods=['POST'])
 @login_required

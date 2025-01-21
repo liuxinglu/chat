@@ -1,4 +1,4 @@
-let messageInd = 0
+let messageInd = 100000
 document.addEventListener('DOMContentLoaded', () => {
     const chatButton = document.getElementById('minichat-button');
     const chatBox = document.getElementById('minichat-box');
@@ -99,12 +99,12 @@ function minisendMessage() {
     }
 
     function miniappendMessage(className, message) {
-        const chatBox = document.getElementById('minichat-content');
+        const chatBox1 = document.getElementById('minichat-content');
         const messageElement = document.createElement('div');
         messageElement.className = 'message ' + className;
         messageElement.style.whiteSpace = 'pre-wrap';
         messageElement.id = 'message' + messageInd;
-        chatBox.appendChild(messageElement);
+        chatBox1.appendChild(messageElement);
         minitypeText('message'+ messageInd, message, 10)
         messageInd++;
 
