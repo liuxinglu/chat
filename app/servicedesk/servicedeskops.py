@@ -1,19 +1,19 @@
 from flask import Blueprint, request, jsonify, session
 from flask_login import login_required
-from app.services.itsm_ticket_service import TicketOpsService
+from app.services.azure_service import AzureService
 from app.tool import base_tool
 import app.wenxin.route_openapi as wenxin
+import os
 
 sdops_bp = Blueprint('sd_ops', __name__)
-ticket_ops_service = TicketOpsService()
 baseTool = base_tool.BaseTool()
 text = []
 
 def create_ticket_to_LLM(user_text):
-    file_text = ticket_ops_service.download_from_blob_storage(ticket_ops_service.SYSTEM_PROMPT_CONTAINER_NAME, ticket_ops_service.USER_PROMPT_BLOB_NAME)
+    file_text = AzureService.download_from_blob_storage(os.getenv('SYSTEM_PROMPT_CONTAINER_NAME'), os.getenv('USER_PROMPT_BLOB_NAME'))
     global text
     text = baseTool.checklen(baseTool.getText("user", user_text))
-    # ticket_ops_service.upload_to_blob_storage(ticket_ops_service.USER_PROMPT_CONTAINER_NAME, ticket_ops_service.USER_PROMPT_BLOB_NAME, user_text)
+    # AzureService.upload_to_blob_storage(os.getenv('USER_PROMPT_CONTAINER_NAME'), os.getenv('USER_PROMPT_BLOB_NAME'), user_text)
     payload = {
         "messages": text,
         "system": file_text
@@ -41,7 +41,7 @@ def upload_file():
         return jsonify({"message": "No selected file"}), 400
 
     user_id = session['user_id']
-    user_text = ticket_ops_service.upload_file(file, user_id)
+    user_text = AzureService.upload_file(file, user_id)
     return jsonify({'reply': create_ticket_to_LLM(user_text)})
 
 # 开单文字描述

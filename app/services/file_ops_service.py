@@ -5,6 +5,7 @@ from pdfminer.high_level import extract_text
 from app.model.models import UploadedFile, db
 from app.config import upload_folder
 from werkzeug.utils import secure_filename
+from app.services.azure_service import AzureService
 
 class FileOpsService:
     # 上传文件
@@ -40,3 +41,7 @@ class FileOpsService:
         db.session.delete(file_to_delete)
         db.session.commit()
         return True
+
+    def get_pic(self, pic_names):
+        # AzureService.download_from_blob_storage()
+        return []

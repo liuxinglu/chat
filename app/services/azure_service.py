@@ -1,25 +1,10 @@
-from flask import Flask, request, jsonify
+from azure.storage.blob import BlobServiceClient
 # from azure.cognitiveservices.speech import SpeechConfig, AudioConfig, SpeechRecognizer, SpeechSynthesisResult, ResultReason
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__
-# from app.model.models import UploadedFile, db
-import io
-from werkzeug.utils import secure_filename
+import os, io
 
-class TicketOpsService:
+class AzureService:
 
-    # Azure Speech Service configuration
-    SPEECH_SUBSCRIPTION = "your_speech_subscription_key"
-    SPEECH_REGION = "your_speech_region"  # e.g., "westus"
-
-    # Azure Blob Storage configuration
-    STORAGE_ACCOUNT_NAME = "stgaiititsm01ea"
-    STORAGE_ACCOUNT_KEY = "7JAMTy+5j9ZkEHQKWMfdAc6A05+EA1e5b0mAb4Ls7N97kMaVHc9CI+y+qNFXdb7Tkj+m51bh7V7i+AStbGxuUA=="
-    VOICE_CONTAINER_NAME = "aiit-itsm-voice"
-    USER_PROMPT_CONTAINER_NAME = "aiit-itsm-userprompt"
-    SYSTEM_PROMPT_CONTAINER_NAME = "aiit-itsm-systemprompt"
-    AICOMPLETION_CONTAINER_NAME = "aiit-itsm-aicompletion"
-    SYSTEM_PROMPT_BLOB_NAME = "itsmsystemprompt.txt"
-    USER_PROMPT_BLOB_NAME = "itsmsystemprompt.txt"
+    @staticmethod
     def transcribe_speech(self, audio_data):
         # speech_config = SpeechConfig()
         # audio_config = AudioConfig(stream=audio_data)
@@ -34,19 +19,22 @@ class TicketOpsService:
         # elif result.reason == ResultReason.Canceled:
         #     cancellation_details = result.cancellation_details
         #     return f"Recognition was canceled: {cancellation_details.reason}"
-        pass
+        return ""
 
-    def upload_to_blob_storage(self, container_name, blob_name, data):
+
+    @staticmethod
+    def upload_to_blob_storage(container_name, blob_name, data):
         container_client = BlobServiceClient.from_connection_string(
-            f"DefaultEndpointsProtocol=https;AccountName={self.STORAGE_ACCOUNT_NAME};AccountKey={self.STORAGE_ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+            f"DefaultEndpointsProtocol=https;AccountName={os.getenv('STORAGE_ACCOUNT_NAME')};AccountKey={os.getenv('STORAGE_ACCOUNT_KEY')};EndpointSuffix=core.windows.net"
         ).get_container_client(container_name)
 
         blob_client = container_client.get_blob_client(blob_name)
         blob_client.upload_blob(data, blob_type="BlockBlob")
 
+    @staticmethod
     def download_from_blob_storage(self, container_name, blob_name):
         container_client = BlobServiceClient.from_connection_string(
-            f"DefaultEndpointsProtocol=https;AccountName={self.STORAGE_ACCOUNT_NAME};AccountKey={self.STORAGE_ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+            f"DefaultEndpointsProtocol=https;AccountName={os.getenv('STORAGE_ACCOUNT_NAME')};AccountKey={os.getenv('STORAGE_ACCOUNT_KEY')};EndpointSuffix=core.windows.net"
         ).get_container_client(container_name)
 
         blob_client = container_client.get_blob_client(blob_name)
@@ -55,27 +43,23 @@ class TicketOpsService:
         download_stream.seek(0)  # 重置流位置到开始
         return download_stream.read().decode('utf-8')  # 假设Blob内容是UTF-8编码的文本
 
-
     # 上传语音文件
+    @staticmethod
     def upload_file(self, file, user_id):
         # Read the file content into a byte array
         file_content = file.read()
 
         # Convert the byte array to an in-memory stream for the Speech SDK
         audio_stream = io.BytesIO(file_content)
-        self.upload_to_blob_storage(self.VOICE_CONTAINER_NAME, audio_stream)
+        AzureService.upload_to_blob_storage(os.getenv('VOICE_CONTAINER_NAME'), audio_stream)
         # Transcribe the speech
-        transcribed_text = self.transcribe_speech(audio_stream)
+        transcribed_text = AzureService.transcribe_speech(audio_stream)
 
         # Upload the transcribed text to Blob Storage
-        self.upload_to_blob_storage(self.USER_PROMPT_CONTAINER_NAME, self.USER_PROMPT_BLOB_NAME, transcribed_text)
+        AzureService.upload_to_blob_storage(os.getenv('USER_PROMPT_CONTAINER_NAME'), os.getenv('USER_PROMPT_BLOB_NAME'), transcribed_text)
 
         # uploaded_file = UploadedFile(filename=filename, content=transcribed_text, user_id=user_id)
         # db.session.add(uploaded_file)
         # db.session.commit()
         # return uploaded_file
         return transcribed_text
-
-
-
-

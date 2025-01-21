@@ -38,6 +38,10 @@ def create_app():
     from .auth.routes import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
+    # 主页广告
+    from .ad.adops import adops_bp
+    app.register_blueprint(adops_bp, url_prefix='/ad')
+
 
     # 文心一言openapi
     from .wenxin.route_openapi import openapi_bp
