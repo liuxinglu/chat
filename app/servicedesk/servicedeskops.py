@@ -10,10 +10,10 @@ baseTool = base_tool.BaseTool()
 text = []
 
 def create_ticket_to_LLM(user_text):
-    file_text = AzureService.download_from_blob_storage(os.getenv('SYSTEM_PROMPT_CONTAINER_NAME'), os.getenv('USER_PROMPT_BLOB_NAME')).read().decode('utf-8')
+    file_text = AzureService.download_from_blob_storage(os.getenv('SYSTEM_PROMPT_CONTAINER_NAME'), os.getenv('SYSTEM_PROMPT_BLOB_NAME')).read().decode('utf-8')
     global text
     text = baseTool.checklen(baseTool.getText("user", user_text))
-    # AzureService.upload_to_blob_storage(os.getenv('USER_PROMPT_CONTAINER_NAME'), os.getenv('USER_PROMPT_BLOB_NAME'), user_text)
+    AzureService.upload_to_blob_storage(os.getenv('USER_PROMPT_CONTAINER_NAME'), os.getenv('USER_PROMPT_BLOB_NAME'), user_text)
     payload = {
         "messages": text,
         "system": file_text

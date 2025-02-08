@@ -1,46 +1,69 @@
 $(document).ready(function () {
 
-    var pictures = ["pic_0", "pic_1", "pic_2"]; // 图片名称数组
+    var pictures = ["homepic01.jpg", "homepic02.jpg", "homepic03.jpg", "homepic04.jpg"]; // 图片名称数组
     var currentIndex = 0; // 当前显示的图片索引
     var intervalId; // 定时器ID
+    var cachedImages = {}; // 用于存储已获取的图片Blob数据
+    var imagesLoaded = 0; // 记录已加载的图片数量
 
-    // 加载并显示图片的函数
+    // 加载并显示图片的函数（现在会检查是否已缓存）
     function loadAndShowPic(picName) {
-        $.ajax({
-            url: '/ad/getPic/' + encodeURIComponent(picName),
-            type: 'POST',
-            success: function (response) {
-                if (response && response.url) {
-                    // 创建一个新的img元素并设置其src属性
-                    var img = $('<img>').attr('src', response.url).addClass('ad-pic');
-                    // 清空#ad_pic中的旧图片
-                    $('#ad_pic').empty();
-                    // 将新图片添加到#ad_pic中
-                    $('#ad_pic').append(img);
-                } else {
-                    console.error('Invalid response:', response);
+        if (cachedImages[picName]) {
+            // 如果图片已缓存，则直接使用缓存中的图片
+            showPic(cachedImages[picName]);
+        } else {
+            // 如果图片未缓存，则从后端获取
+            $.ajax({
+                url: '/ad/getPic/' + encodeURIComponent(picName),
+                type: 'POST',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(blob, textStatus, jqXHR) {
+                    // 存储图片Blob数据到缓存中
+                    cachedImages[picName] = blob;
+                    // 显示图片
+                    showPic(blob);
+
+                    // 增加已加载的图片数量（用于检查是否所有图片都已加载完毕）
+                    imagesLoaded++;
+                    if (imagesLoaded === pictures.length) {
+                        // 如果所有图片都已加载，则开始轮播
+                        startCarousel();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('There has been a problem with your AJAX operation:', textStatus, errorThrown);
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error('Request failed:', textStatus, errorThrown);
-            }
-        });
+            });
+        }
     }
 
-    // 开始轮播的函数
-    function startCarousel() {
-        // 加载第一张图片
-        loadAndShowPic(pictures[currentIndex]);
+    // 显示图片的函数（从缓存中加载）
+    function showPic(blob) {
+        const url = URL.createObjectURL(blob);
+        const img = $('<img>').attr('src', url).addClass('col-md-12');
+        $('#ad_pic').empty(); // 清空之前的图片
+        $('#ad_pic').append(img);
 
-        // 设置定时器来循环显示图片
-        intervalId = setInterval(function () {
-            currentIndex = (currentIndex + 1) % pictures.length; // 计算下一张图片的索引
-            loadAndShowPic(pictures[currentIndex]); // 加载并显示下一张图片
+        setTimeout(function() {
+            URL.revokeObjectURL(url); // 释放URL对象
+        }, 10000); // 10秒后释放（可以根据需要调整）
+    }
+
+    // 开始轮播的函数（现在会在所有图片加载完毕后自动调用）
+    function startCarousel() {
+        // 由于所有图片都已加载到缓存中，因此可以直接开始轮播
+        setInterval(function () {
+            currentIndex = (currentIndex + 1) % pictures.length;
+            showPic(cachedImages[pictures[currentIndex]]);
         }, 3000); // 每3秒切换一次图片
     }
 
-    // 调用开始轮播的函数
-    startCarousel();
+    // 初始化：加载所有图片（注意：这里不再直接调用startCarousel，而是等待所有图片加载完毕）
+    pictures.forEach(function(picName) {
+        loadAndShowPic(picName); // 首次调用时会加载图片，但不会立即开始轮播
+    });
 
     if ($('#flash-messages1 li').length > 0) {
         // 等待动画完成后再设置定时器隐藏flash消息
@@ -138,10 +161,12 @@ $(document).ready(function () {
         $('#container-fluid').empty();
         var htmldata = `<div id="default" class="row justify-content-center mt-4">
                             <div class="col-md-12">
-                                <img src="../static/img/web_illustration.png"/>
+                                <div id="ad_pic" class="col-md-12">
+                                </div>
                             </div>
                         </div>`;
         $('#container-fluid').html(htmldata)
+        startCarousel();
     });
 
 

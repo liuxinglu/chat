@@ -52,7 +52,7 @@ class AzureService:
         blob_client.upload_blob(data, blob_type="BlockBlob")
 
     @staticmethod
-    def download_from_blob_storage(self, container_name, blob_name):
+    def download_from_blob_storage(container_name, blob_name):
         blob_client = AzureService.get_blob_client(container_name, blob_name)
         download_stream = io.BytesIO()
         blob_client.download_blob().readinto(download_stream)
