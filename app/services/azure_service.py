@@ -1,8 +1,11 @@
-from azure.storage.blob import BlobServiceClient
 # from azure.cognitiveservices.speech import SpeechConfig, AudioConfig, SpeechRecognizer, SpeechSynthesisResult, ResultReason
 import os, io
+from azure.storage.blob import BlobServiceClient, BlobClient, generate_blob_sas,BlobSasPermissions
+from datetime import datetime, timedelta
 
 class AzureService:
+
+    connect_str = f"DefaultEndpointsProtocol=https;AccountName={os.getenv('STORAGE_ACCOUNT_NAME')};AccountKey={os.getenv('STORAGE_ACCOUNT_KEY')};EndpointSuffix=core.windows.net"
 
     @staticmethod
     def transcribe_speech(self, audio_data):
@@ -21,27 +24,41 @@ class AzureService:
         #     return f"Recognition was canceled: {cancellation_details.reason}"
         return ""
 
+    @staticmethod
+    def get_sas_url(container_name, blob_name, expiry=3600):
+        blob_service_client = BlobServiceClient.from_connection_string(AzureService.connect_str)
+        container_client = blob_service_client.get_container_client(container_name)
+        blob_client = container_client.get_blob_client(blob_name)
+        sas_token = generate_blob_sas(
+            account_name=blob_service_client.account_name,
+            container_name=container_name,
+            blob_name=blob_name,
+            expiry=datetime.now() + timedelta(seconds=expiry),
+            permission=BlobSasPermissions(read=True),
+        ).decode('utf-8')
+
+        blob_url = blob_client.url
+        return f"{blob_url}?{sas_token}"
+
+    @staticmethod
+    def get_blob_client(container_name, blob_name):
+        container_client = BlobServiceClient.from_connection_string(AzureService.connect_str).get_container_client(container_name)
+        blob_client = container_client.get_blob_client(blob_name)
+        return blob_client
 
     @staticmethod
     def upload_to_blob_storage(container_name, blob_name, data):
-        container_client = BlobServiceClient.from_connection_string(
-            f"DefaultEndpointsProtocol=https;AccountName={os.getenv('STORAGE_ACCOUNT_NAME')};AccountKey={os.getenv('STORAGE_ACCOUNT_KEY')};EndpointSuffix=core.windows.net"
-        ).get_container_client(container_name)
-
-        blob_client = container_client.get_blob_client(blob_name)
+        blob_client = AzureService.get_blob_client(container_name, blob_name)
         blob_client.upload_blob(data, blob_type="BlockBlob")
 
     @staticmethod
     def download_from_blob_storage(self, container_name, blob_name):
-        container_client = BlobServiceClient.from_connection_string(
-            f"DefaultEndpointsProtocol=https;AccountName={os.getenv('STORAGE_ACCOUNT_NAME')};AccountKey={os.getenv('STORAGE_ACCOUNT_KEY')};EndpointSuffix=core.windows.net"
-        ).get_container_client(container_name)
-
-        blob_client = container_client.get_blob_client(blob_name)
+        blob_client = AzureService.get_blob_client(container_name, blob_name)
         download_stream = io.BytesIO()
         blob_client.download_blob().readinto(download_stream)
         download_stream.seek(0)  # 重置流位置到开始
-        return download_stream.read().decode('utf-8')  # 假设Blob内容是UTF-8编码的文本
+        return download_stream
+
 
     # 上传语音文件
     @staticmethod

@@ -42,11 +42,9 @@ def create_app():
     from .ad.adops import adops_bp
     app.register_blueprint(adops_bp, url_prefix='/ad')
 
-
     # 文心一言openapi
     from .wenxin.route_openapi import openapi_bp
     app.register_blueprint(openapi_bp, url_prefix='/wenxin')
-
 
     # 讯飞星火api
     from .xinghuo.route_openapi import xinghuoapi_bp

@@ -1,4 +1,47 @@
 $(document).ready(function () {
+
+    var pictures = ["pic_0", "pic_1", "pic_2"]; // 图片名称数组
+    var currentIndex = 0; // 当前显示的图片索引
+    var intervalId; // 定时器ID
+
+    // 加载并显示图片的函数
+    function loadAndShowPic(picName) {
+        $.ajax({
+            url: '/ad/getPic/' + encodeURIComponent(picName),
+            type: 'POST',
+            success: function (response) {
+                if (response && response.url) {
+                    // 创建一个新的img元素并设置其src属性
+                    var img = $('<img>').attr('src', response.url).addClass('ad-pic');
+                    // 清空#ad_pic中的旧图片
+                    $('#ad_pic').empty();
+                    // 将新图片添加到#ad_pic中
+                    $('#ad_pic').append(img);
+                } else {
+                    console.error('Invalid response:', response);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Request failed:', textStatus, errorThrown);
+            }
+        });
+    }
+
+    // 开始轮播的函数
+    function startCarousel() {
+        // 加载第一张图片
+        loadAndShowPic(pictures[currentIndex]);
+
+        // 设置定时器来循环显示图片
+        intervalId = setInterval(function () {
+            currentIndex = (currentIndex + 1) % pictures.length; // 计算下一张图片的索引
+            loadAndShowPic(pictures[currentIndex]); // 加载并显示下一张图片
+        }, 3000); // 每3秒切换一次图片
+    }
+
+    // 调用开始轮播的函数
+    startCarousel();
+
     if ($('#flash-messages1 li').length > 0) {
         // 等待动画完成后再设置定时器隐藏flash消息
         setTimeout(function() {
@@ -139,10 +182,10 @@ $(document).ready(function () {
                     e.preventDefault();
                     var url = ' ';
                     if($(this).is('#userKeyword')) {
-                        url = '/pageops/getKeywordPage';
+                        url = '/pageops/userKeyword';
                     }
                     else if ($(this).is('#servicedeskops_TicketCreation')){
-                        url = '/pageops/getTicketCreationPage';
+                        url = '/pageops/servicedeskops_TicketCreation';
                     }
                     loadContent(url);
                 });
@@ -167,4 +210,7 @@ $(document).ready(function () {
             }
         });
     }
+
+
+
 });

@@ -42,6 +42,4 @@ class FileOpsService:
         db.session.commit()
         return True
 
-    def get_pic(self, pic_names):
-        # AzureService.download_from_blob_storage()
-        return []
+

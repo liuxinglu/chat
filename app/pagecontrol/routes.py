@@ -4,7 +4,7 @@ pageops_bp = Blueprint('pageops', __name__)
 
 
 
-@pageops_bp.route('/getKeywordPage', methods=['GET'])
+@pageops_bp.route('/userKeyword', methods=['GET'])
 def getKeywordPage():
     return render_template('domain1.html')
 
@@ -14,7 +14,7 @@ def getBankPage():
     return render_template('bank.html')
 
 
-@pageops_bp.route('/getTicketCreationPage', methods=['GET'])
+@pageops_bp.route('/servicedeskops_TicketCreation', methods=['GET'])
 def getChatPage():
     return render_template('ticket.html')
 
