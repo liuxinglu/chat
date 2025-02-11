@@ -18,6 +18,10 @@ def getBankPage():
 def getChatPage():
     return render_template('ticket.html')
 
+@pageops_bp.route('/testMic', methods=['GET'])
+def testMic():
+    return render_template('test.html')
+
 
 @pageops_bp.route('/selectModel', methods=['POST'])
 def selectModel():
@@ -37,7 +41,7 @@ def fileops():
 
 @pageops_bp.route('/servicedesk', methods=['GET'])
 def servicedeskops():
-    return jsonify({"menu":[{"id":"servicedeskops_TicketCreation", "content":'ITSM Ticket Creation'}]}), 200
+    return jsonify({"menu":[{"id":"servicedeskops_TicketCreation", "content":'ITSM Ticket Creation'},{"id":"testMic", "content":'testMic'}]}), 200
 
 @pageops_bp.route('/security', methods=['GET'])
 def securityops():

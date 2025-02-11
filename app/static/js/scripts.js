@@ -48,7 +48,7 @@ $(document).ready(function () {
 
         setTimeout(function() {
             URL.revokeObjectURL(url); // 释放URL对象
-        }, 10000); // 10秒后释放（可以根据需要调整）
+        }, 1000); // 10秒后释放（可以根据需要调整）
     }
 
     // 开始轮播的函数（现在会在所有图片加载完毕后自动调用）
@@ -203,7 +203,7 @@ $(document).ready(function () {
 
                 // 假设 #userKeyword 或 #userChat 是新加载的菜单项之一，它们的事件已经被上面的事件委托处理了
                 // 因此，这里不需要再次绑定它们的事件
-                $('#userKeyword, #userChat, #servicedeskops_TicketCreation, #securityops, #cloudops').on('click', function(e) {
+                $('#userKeyword, #userChat, #servicedeskops_TicketCreation, #securityops, #cloudops, #testMic').on('click', function(e) {
                     e.preventDefault();
                     var url = ' ';
                     if($(this).is('#userKeyword')) {
@@ -211,6 +211,9 @@ $(document).ready(function () {
                     }
                     else if ($(this).is('#servicedeskops_TicketCreation')){
                         url = '/pageops/servicedeskops_TicketCreation';
+                    }
+                    else if ($(this).is('#testMic')){
+                        url = '/pageops/testMic';
                     }
                     loadContent(url);
                 });

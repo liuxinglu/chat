@@ -1,4 +1,4 @@
-# from azure.cognitiveservices.speech import SpeechConfig, AudioConfig, SpeechRecognizer, SpeechSynthesisResult, ResultReason
+from azure.cognitiveservices.speech import SpeechConfig, AudioConfig, SpeechRecognizer, SpeechSynthesisResult, ResultReason
 import os, io
 from azure.storage.blob import BlobServiceClient, BlobClient, generate_blob_sas,BlobSasPermissions
 from datetime import datetime, timedelta
@@ -9,19 +9,21 @@ class AzureService:
 
     @staticmethod
     def transcribe_speech(self, audio_data):
-        # speech_config = SpeechConfig()
-        # audio_config = AudioConfig(stream=audio_data)
-        #
-        # speech_recognizer = SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
-        # result = speech_recognizer.recognize_once_async().result  # The first result contains the text from the audio
-        #
-        # if result.reason == ResultReason.RecognizedSpeech:
-        #     return result.text
-        # elif result.reason == ResultReason.NoMatch:
-        #     return "No speech could be recognized"
-        # elif result.reason == ResultReason.Canceled:
-        #     cancellation_details = result.cancellation_details
-        #     return f"Recognition was canceled: {cancellation_details.reason}"
+        dll_path = r"C:\Users\xinglu\PycharmProjects\chat\venv\Lib\site-packages\azure\cognitiveservices\speech\Microsoft.CognitiveServices.Speech.core.dll"
+        os.environ["PATH"] += os.pathsep + os.path.dirname(dll_path)
+        speech_config = SpeechConfig(subscription=os.getenv('SPEECH_SUBSCRIPTION'), region=os.getenv('SPEECH_REGION'))
+        audio_config = AudioConfig(stream=audio_data)
+
+        speech_recognizer = SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+        result = speech_recognizer.recognize_once_async().result  # The first result contains the text from the audio
+
+        if result.reason == ResultReason.RecognizedSpeech:
+            return result.text
+        elif result.reason == ResultReason.NoMatch:
+            return "No speech could be recognized"
+        elif result.reason == ResultReason.Canceled:
+            cancellation_details = result.cancellation_details
+            return f"Recognition was canceled: {cancellation_details.reason}"
         return ""
 
     @staticmethod
