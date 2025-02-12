@@ -5,59 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/css/flash.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <style>
+    <style>
        /* 在你的<style>标签内或外部CSS文件中添加以下样式 */
-.flashes {
-    position: fixed; /* 使用固定定位 */
-    top: 20px; /* 距离页面顶部20px */
-    right: 20px; /* 距离页面右侧20px，你可以根据需要调整 */
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    z-index: 1000; /* 确保flash消息在其他内容之上 */
-    width: 300px; /* 设置一个宽度，或者根据需要使用auto */
-}
+       body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            width: 90%;
+        }
+        .input-fixed-width {
+            width: 100%; /* 根据布局需求调整宽度 */
+            box-sizing: border-box; /* 确保padding和border不会增加总宽度 */
+        }
 
-.flashes li {
-    background-color: #fff; /* 背景色，可以根据需要更改 */
-    color: #000; /* 文字颜色 */
-    border: 1px solid #ccc; /* 边框颜色 */
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px; /* 圆角 */
-    opacity: 0; /* 初始透明度为0，用于淡入效果 */
-    transform: translateY(20px); /* 初始位置稍微向下偏移，用于滑动效果 */
-    animation: fadeInSlideDown 0.5s forwards ease-out; /* 应用淡入和滑动向下的动画 */
-}
+        /* 增加.form-group类的底部外边距以增大行间距 */
+        .form-group {
+            margin-bottom: 20px; /* 根据需要调整间距大小 */
+        }
 
-/* 定义淡入和滑动向下的动画 */
-@keyframes fadeInSlideDown {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 为不同类型的flash消息添加样式 */
-.flashes li.success {
-    border-color: #d4edda;
-    background-color: #e2f0eb;
-}
-
-.flashes li.error {
-    border-color: #f5c6cb;
-    background-color: #f8d7da;
-}
-
-/* 添加一个隐藏flash消息的类 */
-.hidden {
-    display: none;
-}
+        /* 可选：为最后一个.form-group（通常是提交按钮）添加特殊样式以去除底部外边距 */
+        .form-group.last {
+            margin-bottom: 0;
+        }
     </style>
 </head>
-<body>
+<body class="bg-light">
 <!-- 在你的HTML模板的<body>标签内，通常是在顶部或导航栏下方 -->
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -72,22 +53,33 @@
         <h2 class="text-center mb-4">登录</h2>
         <form method="post" action="{{ url_for('auth.login') }}">
             {{ form.hidden_tag() }}
-            <div class="mb-3">
-                {{ form.username.label(class="form-label") }}
-                {{ form.username(class="form-control") }}
-                <div class="text-danger">
-                    {% for error in form.username.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
+            <div class="form-group row">
+                <label for="{{ form.username.id }}" class="col-sm-2 col-form-label">{{ form.username.label }}</label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.username(class="form-control input-fixed-width") }}
                 </div>
             </div>
-            <div class="mb-3">
-                {{ form.password.label(class="form-label") }}
-                {{ form.password(class="form-control") }}
-                <div class="text-danger">
-                    {% for error in form.password.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
+            <div class="form-group row">
+                <label for="{{ form.password.id }}" class="col-sm-2 col-form-label">{{ form.password.label }}</label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.password(class="form-control input-fixed-width") }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="{{ form.remember_me.id }}" class="col-sm-2 col-form-label">
+                    <lable for="{{ form.remember_me.id }}">记住我</lable>
+                </label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.remember_me() }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="{{ form.captcha.id }}" class="col-sm-2 col-form-label">
+                    <label for="{{ form.captcha.id }}}">验证码</label>
+                </label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    {{ form.captcha(size=6) }}
+                    <img src="{{ url_for('auth.captcha') }}" alt="Captcha" onclick="this.src='{{ url_for('auth.captcha') }}?' + Math.random();">
                 </div>
             </div>
             <div class="mb-3">
@@ -117,7 +109,7 @@
                 // setTimeout(function() { $(this).fadeOut(500); }.bind(this), index * 500);
             });
             // 如果你想要整个列表在动画完成后从DOM中移除（可选）
-            // $('#flash-messages').remove();
+            $('#flash-messages').remove();
         }, 1000 + 500); // 1000ms等待动画完成，再加上500ms的fadeOut时间
     }
 });

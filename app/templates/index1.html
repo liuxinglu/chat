@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI HUB</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/styles1.css">
+    <link rel="stylesheet" href="../static/css/flash.css">
+    <link rel="stylesheet" href="../static/css/chatbtn.css">
+</head>
+<body class="bg-light">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashes" id="flash-messages1">
+      {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+<div class="position-fixed top-0 middle p-3" style="z-index: 5; right: 0; top: 0;">
+  <div id="toast-container" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body">
+    </div>
+  </div>
+</div>
+    <!-- Wrapper -->
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar userKeyword-->
+        <div class="border-right" id="sidebar-wrapper">
+            <div class="list-group list-group-flush">
+                <button id="dashboard" class="btn btn-link text-left list-group-item list-group-item-action">
+                    <strong>dashboard</strong>
+                </button>
+            </div>
+            <div id="menus" class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action btn btn-link" id="domain">AI Domain Solution</a>
+                <a class="list-group-item list-group-item-action btn btn-link" id="servicedesk">AI Service Desk</a>
+                <a class="list-group-item list-group-item-action btn btn-link" id="security">AI Security Solution</a>
+                <a class="list-group-item list-group-item-action btn btn-link" id="cloud">AI Cloud Solution</a>
+            </div>
+            <div class="sidebar-bottom">
+                <strong>Welcome to Contact Us</strong><br>
+                Email: g.liu@tcs-china.com<br>
+                Phone: +86 15122997637
+            </div>
+        </div>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="toggle-button"  id="menu-toggle" aria-expanded="false" style="border: none">
+                    <span class="icon" id="toggle-icon">▶</span> <!-- 初始状态为向右箭头 -->
+                </button>
+
+                <div class="navbar-nav ms-auto">
+                    文心一言3.5/星火
+                </div>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-secondary">登出</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="container-fluid" id="container-fluid">
+                <div id="default" class="row justify-content-center mt-4"> <!-- 添加mt-4来增加上边距 -->
+                    <div id="ad_pic" class="col-md-12">
+                        <!-- 在这里用三张图片循环展示 -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="minichat-button" class="floating-button">
+        <i class="bi bi-chat-dots"></i>AI Chat Support
+    </div>
+    <div id="minichat-box" class="minichat-box">
+        <div class="minichat-header">
+            <span class="close-button">&times;</span>
+            <i class="bi bi-chat-dots"></i>
+        </div>
+        <div id="minichat-content" class="minichat-content">
+            <!-- Chat messages go here -->
+        </div>
+        <div class="minichat-input">
+            <input id="umessage" type="text" placeholder="Type a message...">
+            <button onclick="minisendMessage()">Send</button>
+        </div>
+    </div>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/scripts.js"></script>
+    <script src="../static/js/chatbtn.js"></script>
+</body>
+</html>

@@ -8,3 +8,7 @@ python-dotenv==1.0.1
 appbuilder
 pdfminer.six==20240706
 websocket-client==1.8.0
+wtforms
+werkzeug
+azure-cognitiveservices-speech
+azure-storage-blob

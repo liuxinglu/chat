@@ -9,7 +9,7 @@ function sendMessage() {
     document.getElementById('userInput').value = '';
 
     // 发送请求到后端
-    fetch('/openapi/chat', {
+    fetch('/xinghuo/chat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -24,14 +24,14 @@ function sendMessage() {
       })
     .then(data => {
         if (data.reply) {
-            appendMessage('bot-message', '碎嘴子: ' + data.reply);
+            appendMessage('bot-message', '回复: ' + data.reply);
         } else {
-            appendMessage('bot-message', '碎嘴子: 无法获取回复');
+            appendMessage('bot-message', '回复: 无法获取回复');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        appendMessage('bot-message', `碎嘴子: 请求失败 (${error.message})`);
+        appendMessage('bot-message', `回复: 请求失败 (${error.message})`);
     });
 }
 
@@ -70,7 +70,7 @@ uploadHistoryList = []; // 存储上传历史的数组
     var form = document.getElementById('uploadForm');
     var formData = new FormData(form);
 
-    fetch('/fileops/upload', {
+    fetch('/domain/upload', {
         method: 'POST',
         body: formData
     })
@@ -110,28 +110,41 @@ uploadHistoryList = []; // 存储上传历史的数组
 function getKeywords() {
     const userInput = document.getElementById('result').textContent;
     // 在页面显示用户的消息
-    appendMessage('user-message', '用户: '  + "提取关键字");
-    document.getElementById('userInput').value = '';
+//    appendMessage('user-message', '用户: '  + "提取关键字");
+//    document.getElementById('userInput').value = '';
 
     // 发送请求到后端
-    fetch('/openapi/getKeyword', {
-        method: 'POST',
+    fetch('/pageops/getModel', {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: userInput+ "提取关键字" })
+        }
     })
     .then(response => response.json())
     .then(data => {
-        if (data.reply) {
-            appendMessage('bot-message', '碎嘴子: ' + data.reply);
-        } else {
-            appendMessage('bot-message', '碎嘴子: 无法获取回复');
-        }
+        fetch('/wenxin/getKeyword', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: userInput+ "提取关键字" })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.reply) {
+                appendMessage('bot-message', data.reply);
+            } else {
+                appendMessage('bot-message', '无法获取回复');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            appendMessage('bot-message', '请求失败');
+        });
     })
     .catch(error => {
-        console.error('Error:', error);
-        appendMessage('bot-message', '碎嘴子: 请求失败');
+            console.error('Error:', error);
+            appendMessage('bot-message', '获取模型失败');
     });
 }
 
@@ -151,7 +164,8 @@ function displayUploadHistory(files="none") {
                 <span id="fileName-${index}">${record.fileName}</span>
                 <div>
                     <span class="text-muted me-3" style="font-size: 0.6rem;">${record.time}</span>
-                    <button class="btn btn-outline-primary btn-sm" onclick="viewFile(${index})">查看</button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="viewFileContent(${index})">查看</button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="deleteFile(${index})">删除</button>
                 </div>
             `;
             historyList.appendChild(listItem);
@@ -168,35 +182,54 @@ function displayUploadHistory(files="none") {
                 <div>
                     <span class="text-muted me-3" style="font-size: 0.6rem;">${new Date(file.upload_date).toLocaleString()}</span>
                     <button class="btn btn-outline-primary btn-sm" onclick="viewFileContent(${index})">查看</button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="deleteFile(${index})">删除</button>
                 </div>
             `;
 
             historyList.appendChild(listItem);
-            uploadHistoryList.push({ fileName: file.filename, time: new Date(file.upload_date).toLocaleString(), content: file.content });
+            uploadHistoryList.push({ fileId:file.fileid, fileName: file.filename, time: new Date(file.upload_date).toLocaleString(), content: file.content });
         });
     }
 }
 
 // 查看文件内容并显示在result区域
 function viewFileContent(index) {
-//    const fileName = uploadHistoryList[index].fileName;
-//    fetch(`/fileops/getFile?filename=${encodeURIComponent(fileName)}`)
-//                .then(response => response.json())
-//                .then(data => {
-//                    // 将返回结果展示在页面上
-//                    document.getElementById('result').innerText = data.text;
-//                })
-//                .catch(error => console.error('Error:', error));
     const resultDiv = document.getElementById("result");
     const fileContent = uploadHistoryList[index].content;
     resultDiv.innerHTML = `${fileContent}`;
+}
+
+// 删除文件记录
+function deleteFile(index) {
+    console.log(uploadHistoryList[index].fileId)
+    $.ajax({
+        url: '/domain/deleteFile',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ fileId: uploadHistoryList[index].fileId }),
+        success: function(data) {
+            if (data.message) {
+                fetch('/domain/history')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            console.error(data.error);
+                        } else {
+                            displayUploadHistory(data);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching history:', error));
+            } else {
+                console.error('Error:', '删除失败');
+            }
+        }
+    });
 }
 
 
 // 高亮显示刚上传的文件
 function highlightNewUpload(index) {
     const listItem = document.getElementById(`uploadItem-${index}`);
-//    const listItem = document.getElementById(`fileName-${index}`);
     if (listItem) {
         listItem.classList.add("highlight-animation"); // 添加高亮动画类
     }
@@ -207,3 +240,4 @@ function scrollToLatestUpload() {
     const historyList = document.getElementById("uploadHistory");
     historyList.scrollTop = historyList.scrollHeight; // 将滚动位置设置为列表的最大高度
 }
+
