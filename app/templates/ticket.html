@@ -26,7 +26,7 @@
                         </div>
                         <!-- Input and Send Button -->
                         <div class="input-group mb-3">
-                            <button class="btn ms-2" id="micButton" onclick="startVoiceRecognition()">
+                            <button class="btn ms-2" id="micButton">
                                 <i class="bi bi-mic"></i>
                             </button>
                             <label for="userInput" class="visually-hidden">输入消息</label>
@@ -67,15 +67,17 @@
                 // 停止录音
                 mediaRecorder.stop();
                 isRecording = false;
-                micButton.textContent = '<i class="bi bi-mic"></i>';
+                micButton.innerHTML = '<i class="bi bi-mic"></i>';
             }
             else {
                 audioChunks = [];
                 isRecording = true;
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder = new MediaRecorder(stream, {
+                                                    mimeType: 'audio/webm; codecs=opus' // 或尝试使用WAV格式
+                                                  });
                 mediaRecorder.start();
-                micButton.textContent = '<i class="bi bi-mic-fill"></i>';
+                micButton.innerHTML = '<i class="bi bi-mic-fill"></i>';
 
                 mediaRecorder.ondataavailable = event => {
                     audioChunks.push(event.data);
@@ -87,13 +89,13 @@
                     const formData = new FormData();
                     formData.append('file', audioBlob, 'audio.wav');
 
-                    const response = await fetch('/upload', {
+                    const response = await fetch('servicedesk/upload', {
                         method: 'POST',
                         body: formData
                     });
 
                     const result = await response.json();
-                    userInput.value = result.reply;
+                    appendBox(result.reply);
                 };
             }
         });

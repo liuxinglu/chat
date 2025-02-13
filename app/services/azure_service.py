@@ -1,21 +1,43 @@
+import time
+
 from azure.cognitiveservices.speech import SpeechConfig, AudioConfig, SpeechRecognizer, SpeechSynthesisResult, ResultReason
 import os, io
+
+from azure.cognitiveservices.speech.audio import AudioStreamFormat, PullAudioInputStream, PullAudioInputStreamCallback
 from azure.storage.blob import BlobServiceClient, BlobClient, generate_blob_sas,BlobSasPermissions
 from datetime import datetime, timedelta
+
+
+class BytesIOCallback(PullAudioInputStreamCallback):
+    def __init__(self, audio_io):
+        super().__init__()
+        self._audio_io = audio_io
+
+    def read(self, buffer: memoryview) -> int:
+        data = self._audio_io.read(buffer.nbytes)
+        buffer[:len(data)] = data  # 将数据复制到缓冲区
+        return len(data)
+
+    def close(self):
+        self._audio_io.close()
 
 class AzureService:
 
     connect_str = f"DefaultEndpointsProtocol=https;AccountName={os.getenv('STORAGE_ACCOUNT_NAME')};AccountKey={os.getenv('STORAGE_ACCOUNT_KEY')};EndpointSuffix=core.windows.net"
 
     @staticmethod
-    def transcribe_speech(self, audio_data):
+    def transcribe_speech(audio_data):
         dll_path = r"C:\Users\xinglu\PycharmProjects\chat\venv\Lib\site-packages\azure\cognitiveservices\speech\Microsoft.CognitiveServices.Speech.core.dll"
         os.environ["PATH"] += os.pathsep + os.path.dirname(dll_path)
-        speech_config = SpeechConfig(subscription=os.getenv('SPEECH_SUBSCRIPTION'), region=os.getenv('SPEECH_REGION'))
-        audio_config = AudioConfig(stream=audio_data)
+        speech_config = SpeechConfig(
+            subscription=os.getenv('SPEECH_SUBSCRIPTION'),
+            region=os.getenv('SPEECH_REGION')
+        )
+        # 包装成PullAudioInputStream
+        audio_config = AudioConfig(stream=PullAudioInputStream(BytesIOCallback(audio_data), stream_format = AudioStreamFormat(samples_per_second=16000, bits_per_sample=16, channels=1)))
 
-        speech_recognizer = SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
-        result = speech_recognizer.recognize_once_async().result  # The first result contains the text from the audio
+        speech_recognizer = SpeechRecognizer(speech_config, audio_config)
+        result = speech_recognizer.recognize_once_async().get()
 
         if result.reason == ResultReason.RecognizedSpeech:
             return result.text
@@ -64,21 +86,14 @@ class AzureService:
 
     # 上传语音文件
     @staticmethod
-    def upload_file(self, file, user_id):
+    def upload_file(file, user_id):
         # Read the file content into a byte array
         file_content = file.read()
 
         # Convert the byte array to an in-memory stream for the Speech SDK
+        AzureService.upload_to_blob_storage(os.getenv('VOICE_CONTAINER_NAME'), str(user_id) + str(datetime.now()) + '.wav', file_content)
         audio_stream = io.BytesIO(file_content)
-        AzureService.upload_to_blob_storage(os.getenv('VOICE_CONTAINER_NAME'), audio_stream)
         # Transcribe the speech
         transcribed_text = AzureService.transcribe_speech(audio_stream)
-
-        # Upload the transcribed text to Blob Storage
-        AzureService.upload_to_blob_storage(os.getenv('USER_PROMPT_CONTAINER_NAME'), os.getenv('USER_PROMPT_BLOB_NAME'), transcribed_text)
-
-        # uploaded_file = UploadedFile(filename=filename, content=transcribed_text, user_id=user_id)
-        # db.session.add(uploaded_file)
-        # db.session.commit()
-        # return uploaded_file
+        print(transcribed_text)
         return transcribed_text

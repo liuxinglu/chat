@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, request, jsonify, session
 from flask_login import login_required
 from app.services.azure_service import AzureService
@@ -13,13 +15,13 @@ def create_ticket_to_LLM(user_text):
     file_text = AzureService.download_from_blob_storage(os.getenv('SYSTEM_PROMPT_CONTAINER_NAME'), os.getenv('SYSTEM_PROMPT_BLOB_NAME')).read().decode('utf-8')
     global text
     text = baseTool.checklen(baseTool.getText("user", user_text))
-    AzureService.upload_to_blob_storage(os.getenv('USER_PROMPT_CONTAINER_NAME'), os.getenv('USER_PROMPT_BLOB_NAME'), user_text)
+    user_id = session['user_id']
+    AzureService.upload_to_blob_storage(os.getenv('USER_PROMPT_CONTAINER_NAME'), str(user_id) + str(datetime.now()) + '.txt', user_text)
     payload = {
         "messages": text,
         "system": file_text
     }
     response = wenxin.send_request_to_baidu_api(payload)
-    print(response.get('result'))
     result = response.get('result')[15:-3]
     if response.get('error_code') is not None:
         return response.get('error_msg')
