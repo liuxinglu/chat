@@ -42,7 +42,7 @@ $(document).ready(function () {
     // 显示图片的函数（从缓存中加载）
     function showPic(blob) {
         const url = URL.createObjectURL(blob);
-        const img = $('<img>').attr('src', url).addClass('col-md-12');
+        const img = $('<img>').attr('src', url).addClass('col-md-9');
         $('#ad_pic').empty(); // 清空之前的图片
         $('#ad_pic').append(img);
 
@@ -203,7 +203,7 @@ $(document).ready(function () {
 
                 // 假设 #userKeyword 或 #userChat 是新加载的菜单项之一，它们的事件已经被上面的事件委托处理了
                 // 因此，这里不需要再次绑定它们的事件
-                $('#userKeyword, #userChat, #servicedeskops_TicketCreation, #securityops, #cloudops, #testMic').on('click', function(e) {
+                $('#userKeyword, #userChat, #servicedeskops_TicketCreation, #securityops, #cloudops').on('click', function(e) {
                     e.preventDefault();
                     var url = ' ';
                     if($(this).is('#userKeyword')) {
@@ -211,9 +211,6 @@ $(document).ready(function () {
                     }
                     else if ($(this).is('#servicedeskops_TicketCreation')){
                         url = '/pageops/servicedeskops_TicketCreation';
-                    }
-                    else if ($(this).is('#testMic')){
-                        url = '/pageops/testMic';
                     }
                     loadContent(url);
                 });

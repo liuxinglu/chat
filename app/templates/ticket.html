@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文心一言对话系统</title>
+    <title>create ticket</title>
 
     <link rel="stylesheet" href="../static/css/styles.css" />
     <script src="../static/js/ticket.js"></script>
@@ -19,7 +19,7 @@
                                 <div id="chatBox" class="col-md-12" style="height: 350px; overflow-y: auto;"></div>
                                 <!-- 对话内容将在这里显示 -->
                             </div>
-                            <div id="chatBox2" class="border col-md-6" style="height: 350px; overflow-y: auto;">
+                            <div id="chatBox2" class="border col-md-6" style="height: 400px; overflow-y: auto;">
                                 <div class="col-md-6"><h5>ITSM Ticket Creation Window</h5></div>
                                 <!-- 对话内容2将在这里显示 -->
                             </div>
@@ -30,11 +30,12 @@
                                 <i class="bi bi-mic"></i>
                             </button>
                             <label for="userInput" class="visually-hidden">输入消息</label>
-                            <input type="text" id="userInput" class="form-control" placeholder="输入消息...">
+                            <textarea type="text" id="userInput" class="form-control"  placeholder="输入消息..."></textarea>
+                            <button class="btn btn-primary" id="submitButton">Submit</button>
                         </div>
                         <!-- Information-->
                         <div class="info-label">
-                            <label class="right-label">Click "Submit" to automatically create an ITSM ticket base on the provided information.</label>
+                            <label class="right-label">Information will be used for creating an ITSM ticket.</label>
                         </div>
                         <div class="info-content">
                             To better create the ticket, please provide the AI with voice instructions like the following:<br>
@@ -56,6 +57,9 @@
                 sendUserMessage();
             }
         });
+        document.getElementById('submitButton').addEventListener('click', function(event) {
+            sendUserMessage();
+        });
 
         let micButton = document.getElementById('micButton');
         let mediaRecorder;
@@ -74,7 +78,8 @@
                 isRecording = true;
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream, {
-                                                    mimeType: 'audio/webm; codecs=opus' // 或尝试使用WAV格式
+                                                    mimeType: 'audio/webm; codecs=opus',
+                                                    audioBitsPerSecond: 16000  // 设置采样率
                                                   });
                 mediaRecorder.start();
                 micButton.innerHTML = '<i class="bi bi-mic-fill"></i>';
@@ -83,8 +88,13 @@
                     audioChunks.push(event.data);
                 };
 
+
+
                 mediaRecorder.onstop = async () => {
                     // 创建音频并发送到后端
+                    // const rawBuffer = await new Blob(audioChunks).arrayBuffer();
+                    // const wavHeader = addWavHeader(rawBuffer);
+                    // const audioBlob = new Blob([wavHeader, rawBuffer], { type: 'audio/wav' });
                     const audioBlob = new Blob(audioChunks, { 'type': 'audio/wav' });
                     const formData = new FormData();
                     formData.append('file', audioBlob, 'audio.wav');

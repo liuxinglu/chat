@@ -1,21 +1,6 @@
 body {
     font-family: Arial, sans-serif;
 }
-.chat-container {
-    max-width: 600px;
-    margin: 0 auto;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    width: 90%;
-}
-.chat-box {
-    height: 500px;
-    overflow-y: scroll;
-    border: 1px solid #ddd;
-    padding: 10px;
-    background-color: #f9f9f9;
-}
 .message {
     margin: 5px 0;
 }
@@ -133,7 +118,15 @@ body {
 
 /* 为info-content div添加淡黄色背景 */
 .info-content {
+    position: fixed;
     background-color: #fffacd; /* 淡黄色背景 */
     padding: 10px; /* 可选：为内容添加内边距以改善可读性 */
     margin-top: 10px; /* 可选：为内容与上方元素间添加间距 */
+    font-size: 0.575rem;
+    bottom: 10px;
+    width: 100%;
+}
+
+#userInput {
+    flex:0.7;
 }

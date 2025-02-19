@@ -6,6 +6,8 @@ from app.services.azure_service import AzureService
 from app.tool import base_tool
 import app.wenxin.route_openapi as wenxin
 import os
+from app.config import upload_folder
+from werkzeug.utils import secure_filename
 
 sdops_bp = Blueprint('sd_ops', __name__)
 baseTool = base_tool.BaseTool()
@@ -41,6 +43,9 @@ def upload_file():
     file = request.files['file']
     if file.filename == '':
         return jsonify({"message": "No selected file"}), 400
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(upload_folder, filename)
+    file.save(filepath)
 
     user_id = session['user_id']
     user_text = AzureService.upload_file(file, user_id)

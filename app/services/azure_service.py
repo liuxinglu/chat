@@ -1,11 +1,13 @@
 import time
 
-from azure.cognitiveservices.speech import SpeechConfig, AudioConfig, SpeechRecognizer, SpeechSynthesisResult, ResultReason
+from azure.cognitiveservices.speech import SpeechConfig, AudioConfig, SpeechRecognizer, languageconfig,SpeechSynthesisResult, ResultReason
 import os, io
 
 from azure.cognitiveservices.speech.audio import AudioStreamFormat, PullAudioInputStream, PullAudioInputStreamCallback
 from azure.storage.blob import BlobServiceClient, BlobClient, generate_blob_sas,BlobSasPermissions
 from datetime import datetime, timedelta
+
+from pymupdf.mupdf import ll_fz_open_range_filter
 
 
 class BytesIOCallback(PullAudioInputStreamCallback):
@@ -33,10 +35,13 @@ class AzureService:
             subscription=os.getenv('SPEECH_SUBSCRIPTION'),
             region=os.getenv('SPEECH_REGION')
         )
+        auto_detect_source_language_config = languageconfig.AutoDetectSourceLanguageConfig(languages=["en-US", "zh-CN"])
         # 包装成PullAudioInputStream
-        audio_config = AudioConfig(stream=PullAudioInputStream(BytesIOCallback(audio_data), stream_format = AudioStreamFormat(samples_per_second=16000, bits_per_sample=16, channels=1)))
-
-        speech_recognizer = SpeechRecognizer(speech_config, audio_config)
+        audio_config = AudioConfig(stream=PullAudioInputStream(BytesIOCallback(audio_data),
+                                                               stream_format = AudioStreamFormat(samples_per_second=16000, bits_per_sample=16, channels=1)
+                                                               )
+                                   )
+        speech_recognizer = SpeechRecognizer(speech_config, audio_config, auto_detect_source_language_config=auto_detect_source_language_config)
         result = speech_recognizer.recognize_once_async().get()
 
         if result.reason == ResultReason.RecognizedSpeech:
@@ -45,7 +50,7 @@ class AzureService:
             return "No speech could be recognized"
         elif result.reason == ResultReason.Canceled:
             cancellation_details = result.cancellation_details
-            return f"Recognition was canceled: {cancellation_details.reason}"
+            return f"Recognition was canceled: {cancellation_details.error_details}"
         return ""
 
     @staticmethod

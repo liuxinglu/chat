@@ -12,3 +12,5 @@ wtforms
 werkzeug
 azure-cognitiveservices-speech
 azure-storage-blob
+pillow
+waitress

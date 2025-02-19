@@ -38,7 +38,7 @@ function sendUserMessage() {
 function appendBox(content) {
     appendMessage('bot-message', content);
     var $chatbox = $('#chatBox');
-    var $btn = $('<button>', {'class': 'btn btn-primary', text: 'submit'}).attr('id', 'ticketSubmit' + ticketIndex);
+    var $btn = $('<button>', {'class': 'btn btn-primary', text: 'submit & create ticket'}).attr('id', 'ticketSubmit' + ticketIndex);
     $chatbox.append($btn);
     var $hr = $('<hr>');
     $chatbox.append($hr);
