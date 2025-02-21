@@ -40,7 +40,7 @@ body, html {
 
 .minichat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     padding: 10px;
     background-color: #f1f1f1;
@@ -54,7 +54,7 @@ body, html {
 
 .minichat-content {
     padding: 10px;
-    height: 200px;
+    height: 65%;
     overflow-y: auto;
 }
 
@@ -89,4 +89,16 @@ body, html {
     color: green;
     font-family: monospace;
     white-space: pre; /* 保持空格和换行 */
+}
+
+.header-button {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.header-button:hover {
+    background-color: #ddd;
 }

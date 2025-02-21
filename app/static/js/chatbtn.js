@@ -3,10 +3,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatButton = document.getElementById('minichat-button');
     const chatBox = document.getElementById('minichat-box');
     const closeButton = document.querySelector('.close-button');
+    const minButton = document.getElementById('minimize-button');
+    const maxButton = document.getElementById('maximize-button');
+    let content = document.getElementById('minichat-content');
+
+    let isMaximized;
 
 
     closeButton.addEventListener('click', () => {
         chatBox.style.display = 'none';
+    });
+    minButton.addEventListener('click', () => {
+        if (!isMaximized) { // 如果当前不是最大化状态，则最小化
+            chatBox.style.height = '60px'; // 你可以根据需要调整这个高度
+//            chatBox.style.overflow = 'hidden';
+//            chatBox.style.display = 'none';
+            maxButton.textContent = '+'; // 更改按钮文本为表示可以恢复（最大化）的图标
+        }
+        isMaximized = false;
+    });
+
+    maxButton.addEventListener('click', () => {
+        if (isMaximized) { // 如果当前是最大化状态，则恢复到原始大小
+            chatBox.style.height = '330px'; // 恢复原始高度
+            chatBox.style.overflow = 'auto';
+            minButton.style.display = 'inline-block';
+            maxButton.textContent = '+'; // 恢复按钮文本为表示可以最大化的图标
+            content.style.height = '65%';
+        } else { // 如果当前不是最大化状态，则最大化
+            const viewportHeight = window.innerHeight;
+            const buttonHeight = document.getElementById('minichat-button').offsetHeight;
+            chatBox.style.height = `${viewportHeight - buttonHeight - 20}px`; // 减去按钮高度和一些间距
+            chatBox.style.overflow = 'auto';
+            minButton.style.display = 'inline-block';
+            content.style.height = '86%';
+        }
+        isMaximized = !isMaximized;
     });
 
     let isDragging = false;
