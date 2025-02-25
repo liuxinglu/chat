@@ -40,6 +40,10 @@ function appendBox(content) {
     var $chatbox = $('#chatBox');
     var $btn = $('<button>', {'class': 'btn btn-primary', text: 'submit & create ticket'}).attr('id', 'ticketSubmit' + ticketIndex);
     $chatbox.append($btn);
+    var $btn1 = $('<button>', {'class': 'btn btn-primary', text: '👍'}).attr('id', 'ticketgood' + ticketIndex);
+    $chatbox.append($btn1);
+    var $btn2 = $('<button>', {'class': 'btn btn-primary', text: '👎'}).attr('id', 'ticketbad' + ticketIndex);
+    $chatbox.append($btn2);
     var $hr = $('<hr>');
     $chatbox.append($hr);
 }
