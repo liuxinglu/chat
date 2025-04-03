@@ -17,7 +17,7 @@
                             <div id="chatBox1" class="border col-md-6">
                                 <div class="col-md6" style="display: flex; align-items: center;">
                                     <h5>AI ITSM Chat Window</h5>
-                                    <button class="btn btn-primary" style="margin-left: 10px;">view histroy</button></div>
+                                    <button id="viewHistory" class="btn btn-primary" style="margin-left: 10px;">view histroy</button></div>
                                 <div id="chatBox" class="col-md-12" style="height: 500px; overflow-y: auto;"></div>
                                 <!-- 对话内容将在这里显示 -->
                             </div>
@@ -31,7 +31,7 @@
                             <button class="btn ms-2" id="micButton">
                                 <i class="bi bi-mic"></i>
                             </button>
-                            <label for="userInput" class="visually-hidden">输入消息</label>
+                            <label for="userInput" class="visually-hidden"></label>
                             <textarea type="text" id="userInput" class="form-control"  placeholder="输入消息..."></textarea>
                             <button class="btn btn-primary" id="submitButton">Submit</button>
                         </div>
@@ -61,6 +61,10 @@
         });
         document.getElementById('submitButton').addEventListener('click', function(event) {
             sendUserMessage();
+        });
+
+        document.getElementById('viewHistory').addEventListener('click', function(event) {
+            viewHistory();
         });
 
         let micButton = document.getElementById('micButton');
@@ -94,12 +98,10 @@
 
                 mediaRecorder.onstop = async () => {
                     // 创建音频并发送到后端
-                    // const rawBuffer = await new Blob(audioChunks).arrayBuffer();
-                    // const wavHeader = addWavHeader(rawBuffer);
-                    // const audioBlob = new Blob([wavHeader, rawBuffer], { type: 'audio/wav' });
                     const audioBlob = new Blob(audioChunks, { 'type': 'audio/wav' });
                     const formData = new FormData();
-                    formData.append('file', audioBlob, 'audio.wav');
+                    formData.append('file', audioBlob, 'audio' + (ticketIndex+1) + '.wav');
+                    formData.append('index', ticketIndex+1);
 
                     const response = await fetch('servicedesk/upload', {
                         method: 'POST',
@@ -107,7 +109,8 @@
                     });
 
                     const result = await response.json();
-                    appendBox(result.reply);
+                    // appendBox(result.reply);
+                    userInput.value = result.reply;
                 };
             }
         });

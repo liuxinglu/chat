@@ -6,8 +6,11 @@ import os, io
 from azure.cognitiveservices.speech.audio import AudioStreamFormat, PullAudioInputStream, PullAudioInputStreamCallback
 from azure.storage.blob import BlobServiceClient, BlobClient, generate_blob_sas,BlobSasPermissions
 from datetime import datetime, timedelta
+import logging
 
 from pymupdf.mupdf import ll_fz_open_range_filter
+
+from app.tool.base_tool import recode
 
 
 class BytesIOCallback(PullAudioInputStreamCallback):
@@ -47,7 +50,8 @@ class AzureService:
         if result.reason == ResultReason.RecognizedSpeech:
             return result.text
         elif result.reason == ResultReason.NoMatch:
-            return "No speech could be recognized"
+            nomatch_details = result.no_match_details
+            return f"No speech could be recognized:{nomatch_details.reason}"
         elif result.reason == ResultReason.Canceled:
             cancellation_details = result.cancellation_details
             return f"Recognition was canceled: {cancellation_details.error_details}"
@@ -76,9 +80,10 @@ class AzureService:
         return blob_client
 
     @staticmethod
-    def upload_to_blob_storage(container_name, blob_name, data):
-        blob_client = AzureService.get_blob_client(container_name, blob_name)
-        blob_client.upload_blob(data, blob_type="BlockBlob")
+    @recode
+    def upload_to_blob_storage(**dic):
+        blob_client = AzureService.get_blob_client(dic['container_name'], dic['blob_name'])
+        blob_client.upload_blob(dic['data'], blob_type="BlockBlob")
 
     @staticmethod
     def download_from_blob_storage(container_name, blob_name):
@@ -96,9 +101,9 @@ class AzureService:
         file_content = file.read()
 
         # Convert the byte array to an in-memory stream for the Speech SDK
-        AzureService.upload_to_blob_storage(os.getenv('VOICE_CONTAINER_NAME'), str(user_id) + str(datetime.now()) + '.wav', file_content)
+        AzureService.upload_to_blob_storage(container_name=os.getenv('VOICE_CONTAINER_NAME'), blob_name=file.filename + str(user_id) + str(datetime.now()) + '.wav', data=file_content)
         audio_stream = io.BytesIO(file_content)
         # Transcribe the speech
         transcribed_text = AzureService.transcribe_speech(audio_stream)
-        print(transcribed_text)
+        logging.info("transcribed_text:"+transcribed_text)
         return transcribed_text

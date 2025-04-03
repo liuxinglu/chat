@@ -25,3 +25,12 @@ class UploadedFile(db.Model):
     content = db.Column(db.Text, nullable=False)
     upload_date = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+class Ticket(db.Model):
+    __tablename__ = 'ticket_history'
+    id = db.Column(db.Integer, primary_key=True)
+    index = db.Column(db.Integer, nullable=False)
+    message = db.Column(db.String(800), nullable=True)
+    reply = db.Column(db.Text, nullable=True)
+    good1_bad0 = db.Column(db.Integer, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

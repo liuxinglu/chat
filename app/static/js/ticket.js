@@ -1,4 +1,23 @@
-let ticketIndex = 0
+var ticketIndex = 0
+
+function viewHistory() {
+    // 发送请求到后端
+    fetch('/servicedesk/tickethistory', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`);}
+        return response.json();
+      })
+    .then(data => {
+
+    })
+    .catch(error => { console.error('Error:', error.message);});
+}
+
 //发送消息
 function sendUserMessage() {
     const userInput = document.getElementById('userInput').value;
@@ -14,7 +33,7 @@ function sendUserMessage() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: userInput })
+        body: JSON.stringify({ message: userInput, index: ticketIndex })
     })
     .then(response => {
         if (!response.ok) {
@@ -38,14 +57,55 @@ function sendUserMessage() {
 function appendBox(content) {
     appendMessage('bot-message', content);
     var $chatbox = $('#chatBox');
-    var $btn = $('<button>', {'class': 'btn btn-primary', text: 'submit & create ticket'}).attr('id', 'ticketSubmit' + ticketIndex);
+    var $btn = $('<button>', {'class': 'btn btn-primary', text: 'submit & create ticket'}).attr('id', 'ticketSubmit' + (ticketIndex-1));
+    $btn.on('click', function() { submitTicket(ticketIndex-1);});
     $chatbox.append($btn);
-    var $btn1 = $('<button>', {'class': 'btn btn-primary', text: '👍'}).attr('id', 'ticketgood' + ticketIndex);
+    var $btn1 = $('<button>', {'class': 'btn btn-primary', text: '👍'}).attr('id', 'ticketgood' + (ticketIndex-1));
+    $btn1.on('click', function() { judgeTicket(ticketIndex-1, 1);});
     $chatbox.append($btn1);
-    var $btn2 = $('<button>', {'class': 'btn btn-primary', text: '👎'}).attr('id', 'ticketbad' + ticketIndex);
+    var $btn2 = $('<button>', {'class': 'btn btn-primary', text: '👎'}).attr('id', 'ticketbad' + (ticketIndex-1));
+    $btn2.on('click', function() { judgeTicket(ticketIndex-1, 0);});
     $chatbox.append($btn2);
     var $hr = $('<hr>');
     $chatbox.append($hr);
+}
+
+function submitTicket(ind) {
+    // 发送请求到后端
+    fetch('/servicedesk/submitTicket', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ index: ind })
+    })
+    .then(response => {
+        if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`);}
+        return response.json();
+      })
+    .then(data => {
+
+    })
+    .catch(error => { console.error('Error:', error.message);});
+}
+
+function judgeTicket(ind, goodorbad) {
+// 发送请求到后端
+    fetch('/servicedesk/goodorbad', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ index: ind, goodorbad:goodorbad })
+    })
+    .then(response => {
+        if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`);}
+        return response.json();
+      })
+    .then(data => {
+
+    })
+    .catch(error => { console.error('Error:', error.message);});
 }
 
 function appendMessage(className, message) {

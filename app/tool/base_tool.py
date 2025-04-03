@@ -1,6 +1,10 @@
 import random, string
+import time
+
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from flask import session
+import logging
+
 
 # 生成验证码
 def generate_captcha():
@@ -30,6 +34,14 @@ def generate_captcha():
 
     image = image.filter(ImageFilter.GaussianBlur(radius=1.5))
     return image, captcha_text
+
+
+def recode(fun):
+    def f(**pa):
+        logging.info(time.ctime())
+        fun(**pa)
+        logging.info(time.ctime())
+    return f
 
 class BaseTool():
     def __init__(self):
@@ -61,3 +73,5 @@ class BaseTool():
 
     def text(self):
         return self.__text
+
+

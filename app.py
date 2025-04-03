@@ -18,6 +18,6 @@ def index():
     return render_template('index1.html')
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     serve(app, host='0.0.0.0', port=5000)
 

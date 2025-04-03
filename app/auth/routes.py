@@ -7,7 +7,7 @@ from .forms import RegistrationForm
 from .forms import LoginForm
 from io import BytesIO
 from app.tool.base_tool import generate_captcha
-from app.services import user_service
+from app.services.user_service import UserServer
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -17,7 +17,7 @@ auth_bp = Blueprint('auth', __name__)
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user_service.create_user(form.username.data, form.password.data)
+        UserServer.create_user(form.username.data, form.password.data)
         flash('注册成功！请登录。', category='success')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
@@ -26,7 +26,7 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = user_service.authenticate_user(form.username.data, form.password.data, form.captcha.data)
+        user = UserServer.authenticate_user(form.username.data, form.password.data, form.captcha.data)
         if user:
             login_user(user)
             session['user_id'] = user.id
